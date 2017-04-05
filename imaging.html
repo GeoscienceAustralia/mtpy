@@ -1,0 +1,1057 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Imaging &#8212; MTpy 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MTpy 0.2 documentation" href="master_index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="master_index.html">MTpy 0.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="imaging">
+<h1>Imaging<a class="headerlink" href="#imaging" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-mtpy.imaging.mtplot">
+<span id="module-mtplot"></span><h2><strong>Module MTPlot</strong><a class="headerlink" href="#module-mtpy.imaging.mtplot" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="mtplot">
+<h3>mtplot<a class="headerlink" href="#mtplot" title="Permalink to this headline">¶</a></h3>
+<p><strong>Provides</strong></p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Different plotting options to represent the MT response.</li>
+<li>Ability to create text files of the plots for further analysis</li>
+<li>Class object that contains all the important information for an MT
+station.</li>
+</ol>
+</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="37%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Functions</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>plot_mt_response</td>
+<td>plots resistivity and phase for a single station
+Options include tipper, strike and skew.</td>
+</tr>
+<tr class="row-odd"><td>plot_multiple_mt_responses</td>
+<td>plots multiple stations at once with options
+of plotting in single figure, all in one
+figure as subplots or all in one plot for
+direct comparison.</td>
+</tr>
+<tr class="row-even"><td>plot_pt</td>
+<td>plots the phase tensor ellipses and parameters
+in one plot including strike angle, minimum
+and maximum phase, skew angle and ellipticity</td>
+</tr>
+<tr class="row-odd"><td>plot_pt_pseudosection</td>
+<td>plots a pseudo section of phase
+tensor ellipses assuming the
+stations are along a profile line.
+Options to plot induction arrows.</td>
+</tr>
+<tr class="row-even"><td>plot_mt_map</td>
+<td>plots phase tensor ellipses in map view for
+a single frequency.  Options to plot
+induction arrows.</td>
+</tr>
+<tr class="row-odd"><td>plot_strike</td>
+<td>plots strike angle estimated from the
+invariants of the impedance tensor defined
+by Weaver et al. [2000,2003], strike angle
+from the phase tensor and option to plot
+strike estimated from the induction arrows.</td>
+</tr>
+<tr class="row-even"><td>plot_residual_pt_maps</td>
+<td>plots the residual phase tensor between two
+surveys in map view.</td>
+</tr>
+<tr class="row-odd"><td>plot_residual_pt_ps</td>
+<td>plots the residual phase tensor between two
+surveys as a pseudo section.</td>
+</tr>
+</tbody>
+</table>
+<p>All plot function return plot classes where the important properties are made
+attributes which can be manipulated by the user.  All classes have been
+written with the basic input being edi files.  This was assumed to be the
+standard MT response file, but turns out to be not as widely used as thought.
+So the inputs can be other arrays and class objects (see MTplot doc string for
+details).  If you have a data file format you can create a class using the
+objects in mtpy.core to create an input, otherwise contact us and we can try
+to build something.</p>
+<p>A typical use might be loading in all the .edi files in and plotting them in
+different modes, like apparent resistivity and phase, phase tensor pseudo
+section and strike angle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.imaging.mtplot</span> <span class="k">as</span> <span class="nn">mtplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edipath</span> <span class="o">=</span> <span class="s2">r&quot;/home/MT/EDIfiles&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#--&gt; create a list of full paths to the edi files</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edilst</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">edipath</span><span class="p">,</span><span class="n">edi</span><span class="p">)</span> <span class="k">for</span> <span class="n">edi</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">edipath</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>        <span class="k">if</span> <span class="n">edi</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.edi&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#--&gt; plot apparent resisitivity, phase and induction arrows</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rpm</span> <span class="o">=</span> <span class="n">mtplot</span><span class="o">.</span><span class="n">plot_multiple_mt_responses</span><span class="p">(</span><span class="n">fn_lst</span><span class="o">=</span><span class="n">edilst</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>                                     <span class="n">plot_tipper</span><span class="o">=</span><span class="s1">&#39;yr&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#--&gt; close all the plots after done looking at them</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#--&gt; plot phase tensor pseudo section with induction arrows</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span> <span class="o">=</span> <span class="n">mtplot</span><span class="o">.</span><span class="n">plot_pt_pseudosection</span><span class="p">(</span><span class="n">fn_lst</span><span class="o">=</span><span class="n">edilst</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>                                <span class="n">plot_tipper</span><span class="o">=</span><span class="s1">&#39;yr&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#--&gt; write out the phase tensor parameter values to files</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span><span class="o">.</span><span class="n">export_pt_params_to_file</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#--&gt; change coloring scheme to color by skew and a segmented colormap</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span><span class="o">.</span><span class="n">ellipse_colorby</span> <span class="o">=</span> <span class="s1">&#39;skew_seg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span><span class="o">.</span><span class="n">ellipse_cmap</span> <span class="o">=</span> <span class="s1">&#39;mt_seg_bl2wh2rd&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span><span class="o">.</span><span class="n">ellipse_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span><span class="o">.</span><span class="n">redraw_plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Authors:</th><td class="field-body"><p class="first">Lars Krieger,
+Jared Peacock, and
+Kent Invariarty</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Version:</th><td class="field-body"><p class="first last">0.0.1 of 2013</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<span class="target" id="module-mtpy.imaging.plotnresponses"></span><p>plots multiple MT responses simultaneously</p>
+<p>Created on Thu May 30 17:02:39 2013
+&#64;author: jpeacock-pr</p>
+<dl class="class">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses">
+<em class="property">class </em><code class="descclassname">mtpy.imaging.plotnresponses.</code><code class="descname">PlotMultipleResponses</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotnresponses.html#PlotMultipleResponses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses" title="Permalink to this definition">¶</a></dt>
+<dd><p>plots multiple MT responses simultaneously either in single plots or in
+one plot of sub-figures or in a single plot with subfigures for each
+component.</p>
+<dl class="docutils">
+<dt>expecting only one type of input &#8211;&gt; can be:</dt>
+<dd><p class="first"><strong>fn_list</strong> : list of filenames to plot</p>
+<blockquote class="last">
+<div><p><strong>z_object_list</strong> : list of mtpy.core.z.Z objects</p>
+<p><strong>res_object_list</strong> : list of mtpy.imaging.mtplot.ResPhase objects</p>
+<p><strong>tipper_object_list</strong> : list of mtpy.imaging.mtplot.Tipper objects</p>
+<p><strong>mt_object_list</strong> : list of mtpy.imaging.mtplot.MTplot objects</p>
+</div></blockquote>
+</dd>
+</dl>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>fn_list</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of filenames to plot</span><dd><blockquote class="first">
+<div>ie. [fn_1, fn_2, ...], <em>default</em> is None</div></blockquote>
+<dl class="last docutils">
+<dt><strong>z_object_list</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of mtpy.core.z.Z objects</span><dd><em>default</em> is None</dd>
+<dt><strong>res_object_list</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of mtpy.imaging.mtplot.ResPhase objects</span><dd><em>default</em> is None</dd>
+<dt><strong>tipper_object_list</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of mtpy.imaging.mtplot.Tipper objects</span><dd><em>default</em> is None</dd>
+<dt><strong>mt_object_list</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of mtpy.imaging.mtplot.MTplot objects</span><dd><em>default</em> is None</dd>
+</dl>
+</dd>
+<dt><strong>fig_num</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">int</span><dd>figure number
+<em>default</em> is 1</dd>
+</dl>
+<p><strong>fig_size</strong> : [width, height] of figure size in inches</p>
+<dl class="docutils">
+<dt><strong>rot_z</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">float or np.ndarray</span><dd>rotation angle of impedance tensor (deg or radians),
+<em>Note</em> : rotaion is clockwise positive
+<em>default</em> is 0
+Can input so each station is rotated at a constant angle or
+each period is rotated differently, or both.</dd>
+<dt><strong>plot_num</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">[ 1 | 2 | 3 ]</span><dd><ul class="first last simple">
+<li>1 for just Ex/By and Ey/Bx <em>default</em></li>
+<li>2 for all 4 components</li>
+<li>3 for off diagonal plus the determinant</li>
+</ul>
+</dd>
+<dt><strong>plot_style</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">[ &#8216;1&#8217; | &#8216;all&#8217; | &#8216;compare&#8217; ]</span><dd><dl class="first last docutils">
+<dt>determines the plotting style:</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>&#8216;1&#8217; for plotting each station in a different</dt>
+<dd><p class="first last">figure. <em>default</em></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>&#8216;all&#8217; for plotting each station in a subplot</dt>
+<dd><p class="first last">all in the same figure</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>&#8216;compare&#8217; for comparing the responses all in</dt>
+<dd><p class="first last">one plot.  Here the responses are
+colored from dark to light.  This
+plot can get messy if too many stations
+are plotted.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt><strong>plot_title</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">string</span><dd>title of plot
+<em>default</em> is station name</dd>
+<dt><strong>plot_tipper</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">[ &#8216;yri&#8217; | &#8216;yr&#8217; | &#8216;yi&#8217; | &#8216;n&#8217; ]</span><dd><p class="first">Plots the tipper in a bottom pannel
+* &#8216;yri&#8217;  &#8211;&gt; plots the real and imaginar parts
+* &#8216;yr&#8217;   &#8211;&gt; plots just the real part
+* &#8216;yi&#8217;   &#8211;&gt; plots just the imaginary part</p>
+<p class="last"><strong>Note:</strong> the convention is to point towards a
+conductor.  Can change this by setting the
+parameter arrow_direction = 1.</p>
+</dd>
+<dt><strong>plot_strike</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">[ &#8216;y&#8217; | 1 | 2 | 3 | &#8216;n&#8217; ]</span><dd><dl class="first last docutils">
+<dt>Plots the strike angle from different parameters:</dt>
+<dd><ul class="first">
+<li><dl class="first docutils">
+<dt>&#8216;y&#8217;  &#8211;&gt; plots strike angle determined from</dt>
+<dd><p class="first last">the invariants of Weaver et al. [2000]
+and the phase tensor of
+Caldwell et al. [2004], if Tipper is
+plotted the strike of the tipper is
+also plotted.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<blockquote class="last">
+<div><ul>
+<li><dl class="first docutils">
+<dt>1  &#8211;&gt; plots strike angle determined from</dt>
+<dd><p class="first last">the invariants of Weaver et al. [2000]</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>2  &#8211;&gt; plots strike angle determined from</dt>
+<dd><p class="first last">the phase tensor of
+Caldwell et al. [2004]</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>3  &#8211;&gt; plots strike angle determined from</dt>
+<dd><p class="first last">the tipper</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">&#8216;n&#8217; &#8211;&gt; doesn&#8217;t plot the strike, <em>default</em></p>
+</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+<dt><strong>plot_skew</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">[ &#8216;y&#8217; | &#8216;n&#8217; ]</span><dd><p class="first">string for plotting skew angle.  This is plotted in
+the same plot as strike angle at the moment.</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>&#8216;y&#8217; for plotting the skew</li>
+<li>&#8216;n&#8217; for not plotting skew <em>default</em></li>
+</ul>
+</div></blockquote>
+</dd>
+<dt><strong>fig_dpi</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">int</span><dd>dots-per-inch resolution, <em>default</em> is 300</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.imaging.mtplottools</span> <span class="k">as</span> <span class="nn">mtplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edipath</span> <span class="o">=</span> <span class="s2">r&quot;/home/Edifiles&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edilist</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">edipath</span><span class="p">,</span><span class="n">edi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>       <span class="k">for</span> <span class="n">edi</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">edipath</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>       <span class="k">if</span> <span class="n">edi</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.edi&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span> <span class="n">each</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">subplot</span> <span class="nb">all</span> <span class="ow">in</span> <span class="n">one</span> <span class="n">figure</span> <span class="k">with</span> <span class="n">tipper</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rp1</span> <span class="o">=</span> <span class="n">mtplot</span><span class="o">.</span><span class="n">PlotMultipleResPhase</span><span class="p">(</span><span class="n">fn_list</span><span class="o">=</span><span class="n">edilist</span><span class="p">,</span> <span class="n">plotnum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                            <span class="n">plot_tipper</span><span class="o">=</span><span class="s1">&#39;yr&#39;</span><span class="p">,</span><span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<blockquote>
+<div><table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-m<var>t_list</var></span></kbd></td>
+<td>list of mtplot.MTplot objects made from inputs</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-f<var>ignum</var></span></kbd></td>
+<td>figure number for plotting</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-f<var>ig_size</var></span></kbd></td>
+<td>figure size in inches [width, height]</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-p<var>lotnum</var></span></kbd></td>
+<td>plot type, see arguments for details</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-t<var>itle</var></span></kbd></td>
+<td>title of the plot, <em>default</em> is station name</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d<var>pi</var></span></kbd></td>
+<td>Dots-per-inch resolution of plot, <em>default</em> is 300</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-r<var>otz</var></span></kbd></td>
+<td>Rotate impedance tensor by this angle (deg) assuming
+that North is 0 and angle is positive clockwise</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-p<var>lot_tipper</var></span></kbd></td>
+<td>string to tell the program to plot tipper arrows or
+not, see accepted values above in arguments</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-p<var>lot_strike</var></span></kbd></td>
+<td>string or integer telling the program to plot the
+strike angle, see values above in arguments</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-p<var>lot_skew</var></span></kbd></td>
+<td>string to tell the program to plot skew angle.
+The skew is plotted in the same subplot as the strike
+angle at the moment</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-p<var>eriod</var></span></kbd></td>
+<td>period array cooresponding to the impedance tensor</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-f<var>ont_size</var></span></kbd></td>
+<td>size of font for the axis ticklabels, note that the
+axis labels will be font_size+2</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-a<var>xr</var></span></kbd></td>
+<td>matplotlib.axes object for the xy,yx resistivity plot.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-a<var>xp</var></span></kbd></td>
+<td>matplotlib.axes object for the xy,yx phase plot</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-a<var>xt</var></span></kbd></td>
+<td>matplotlib.axes object for the tipper plot</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-a<var>x2r</var></span></kbd></td>
+<td>matplotlib.axes object for the xx,yy resistivity plot</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-a<var>x2p</var></span></kbd></td>
+<td>matplotlib.axes object for the xx,yy phase plot</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-a<var>xs</var></span></kbd></td>
+<td>matplotlib.axes object for the strike plot</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-a<var>xs2</var></span></kbd></td>
+<td>matplotlib.axes object for the skew plot</td></tr>
+</tbody>
+</table>
+<blockquote>
+<div><strong>Note:</strong> that from these axes object you have control of the
+plot.  You can do this by changing any parameter in the
+axes object and then calling update_plot()</div></blockquote>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-e<var>rxyr</var></span></kbd></td>
+<td>class matplotlib.container.ErrorbarContainer for
+xy apparent resistivity.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-e<var>rxyp</var></span></kbd></td>
+<td>class matplotlib.container.ErrorbarContainer for
+xy.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-e<var>ryxr</var></span></kbd></td>
+<td>class matplotlib.container.ErrorbarContainer for
+yx apparent resistivity.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-e<var>ryxp</var></span></kbd></td>
+<td>class matplotlib.container.ErrorbarContainer for
+yx phase.</td></tr>
+</tbody>
+</table>
+<blockquote>
+<div><strong>Note:</strong> that from these line objects you can manipulate the
+error bar properties and then call update_plot()</div></blockquote>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-x<var>y_ls</var></span></kbd></td>
+<td>line style for xy and xx components, <em>default</em> is None</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-y<var>x_ls</var></span></kbd></td>
+<td>line style for yx and yy components, <em>default</em> is None</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d<var>et_ls</var></span></kbd></td>
+<td>line style for determinant, <em>default</em> is None</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-x<var>y_marker</var></span></kbd></td>
+<td>marker for xy and xx, <em>default</em> is squares</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-y<var>x_marker</var></span></kbd></td>
+<td>marker for yx and yy, <em>default</em> is circles</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d<var>et_marker</var></span></kbd></td>
+<td>marker for determinant, <em>default</em> is diamonds</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-x<var>y_color</var></span></kbd></td>
+<td>marker color for xy and xx, <em>default</em> is blue</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-y<var>x_color</var></span></kbd></td>
+<td>marker color for yx and yy, <em>default</em> is red</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d<var>et_color</var></span></kbd></td>
+<td>marker color for determinant, <em>default</em> is green</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-x<var>y_mfc</var></span></kbd></td>
+<td>marker face color for xy and xx, <em>default</em> is None</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-y<var>x_mfc</var></span></kbd></td>
+<td>marker face color for yx and yy, <em>default</em> is None</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d<var>et_mfc</var></span></kbd></td>
+<td>marker face color for determinant, <em>default</em> is None</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-s<var>kew_marker</var></span></kbd></td>
+<td>marker for skew angle, <em>default</em> is &#8216;d&#8217;</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-s<var>kew_color</var></span></kbd></td>
+<td>color for skew angle, <em>default</em> is &#8216;orange&#8217;</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-s<var>trike_inv_marker</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>marker for strike angle determined by invariants
+<em>default</em> is &#8216;^&#8217;</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-s<var>trike_inv_color</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>color for strike angle determined by invaraiants
+<em>default</em> is (.2, .2, .7)</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-s<var>trike_pt_marker</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>marker for strike angle determined by pt,
+<em>default</em> is&#8217;v&#8217;</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-s<var>trike_pt_color</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>color for strike angle determined by pt
+<em>default</em> is (.7, .2, .2)</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-s<var>trike_tip_marker</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>marker for strike angle determined by tipper
+<em>default</em> is &#8216;&gt;&#8217;</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-s<var>trike_tip_color</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>color for strike angle determined by tipper
+<em>default</em> is (.2, .7, .2)</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-m<var>arker_size</var></span></kbd></td>
+<td>size of marker in relative dimenstions, <em>default</em> is 2</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-m<var>arker_lw</var></span></kbd></td>
+<td>line width of marker, <em>default</em> is 100./dpi</td></tr>
+</tbody>
+</table>
+<blockquote>
+<div><em>For more on line and marker styles see matplotlib.lines.Line2D</em></div></blockquote>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-a<var>rrow_lw</var></span></kbd></td>
+<td>line width of the arrow, <em>default</em> is 0.75</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-a<var>rrow_head_width</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>head width of the arrow, <em>default</em> is 0 for no arrow
+head.  Haven&#8217;t found a good way to scale the arrow
+heads in a log scale.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-a<var>rrow_head_height</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>head width of the arrow, <em>default</em> is 0 for no arrow
+head.  Haven&#8217;t found a good way to scale the arrow
+heads in a log scale.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-a<var>rrow_color_real</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>color of the real arrows, <em>default</em> is black</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-a<var>rrow_color_imag</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>color of the imaginary arrows, <em>default</em> is blue</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-a<var>rrow_direction</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>0 for pointing towards a conductor and -1 for
+pointing away from a conductor.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-x<var>limits</var></span></kbd></td>
+<td>limits on the x-limits (period), <em>default</em> is None
+which will estimate the min and max from the data,
+setting the min as the floor(min(period)) and the max
+as ceil(max(period)).  Input in linear scale if you
+want to change the period limits, ie. (.1,1000)</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-r<var>es_limits</var></span></kbd></td>
+<td>limits on the resistivity, <em>default</em> is None, which
+will estimate the min and max from the data, rounding
+to the lowest and highest increments to the power of 10
+Input in linear scale if you want to change them,
+ie. (1,10000). Note this only sets the xy and yx
+components, not the xx and yy.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-p<var>hase_limits</var></span></kbd></td>
+<td>limits on the phase, <em>default</em> is (0,90) but will
+adapt to the data if there is phase above 90 or below
+0.  Input in degrees.  Note this only changes the xy
+and yx components.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-t<var>ipper_limits</var></span></kbd></td>
+<td>limits of the y-axis, <em>default</em> is (-1,1)</td></tr>
+</tbody>
+</table>
+</div></blockquote>
+<dl class="method">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotnresponses.html#PlotMultipleResponses.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>rewrite the string builtin to give a useful message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotnresponses.html#PlotMultipleResponses.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot the apparent resistivity and phase</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses.plot_pt">
+<code class="descname">plot_pt</code><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses.plot_pt" title="Permalink to this definition">¶</a></dt>
+<dd><p>string to plot phase tensor ellipses</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses.plot_skew">
+<code class="descname">plot_skew</code><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses.plot_skew" title="Permalink to this definition">¶</a></dt>
+<dd><p>string to plot skew</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses.plot_strike">
+<code class="descname">plot_strike</code><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses.plot_strike" title="Permalink to this definition">¶</a></dt>
+<dd><p>string to plot strike</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses.plot_tipper">
+<code class="descname">plot_tipper</code><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses.plot_tipper" title="Permalink to this definition">¶</a></dt>
+<dd><p>string to plot tipper</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses.redraw_plot">
+<code class="descname">redraw_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotnresponses.html#PlotMultipleResponses.redraw_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses.redraw_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>use this function if you updated some attributes and want to re-plot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># change the color and marker of the xy components</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.imaging.mtplottools</span> <span class="k">as</span> <span class="nn">mtplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">mtplot</span><span class="o">.</span><span class="n">PlotResPhase</span><span class="p">(</span><span class="s1">r&#39;/home/MT/mt01.edi&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">xy_color</span> <span class="o">=</span> <span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">xy_marker</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">redraw_plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses.rot_z">
+<code class="descname">rot_z</code><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses.rot_z" title="Permalink to this definition">¶</a></dt>
+<dd><p>rotation angle(s)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.imaging.plotnresponses.PlotMultipleResponses.update_plot">
+<code class="descname">update_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotnresponses.html#PlotMultipleResponses.update_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotnresponses.PlotMultipleResponses.update_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>update any parameters that where changed using the built-in draw from
+canvas.</p>
+<p>Use this if you change an of the .fig or axes properties</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># to change the grid lines to only be on the major ticks</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.imaging.mtplottools</span> <span class="k">as</span> <span class="nn">mtplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">mtplot</span><span class="o">.</span><span class="n">PlotResPhase</span><span class="p">(</span><span class="s1">r&#39;/home/MT/mt01.edi&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">[</span><span class="n">p1</span><span class="o">.</span><span class="n">axr</span><span class="p">,</span><span class="n">p1</span><span class="o">.</span><span class="n">axp</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-mtpy.imaging.plotstrike"></span><p>Created on Thu May 30 18:28:24 2013</p>
+<p>&#64;author: jpeacock-pr</p>
+<dl class="class">
+<dt id="mtpy.imaging.plotstrike.PlotStrike">
+<em class="property">class </em><code class="descclassname">mtpy.imaging.plotstrike.</code><code class="descname">PlotStrike</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotstrike.html#PlotStrike"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotstrike.PlotStrike" title="Permalink to this definition">¶</a></dt>
+<dd><p>PlotStrike will plot the strike estimated from the invariants, phase tensor
+and the tipper in either a rose diagram of xy plot</p>
+<p>plots the strike angle as determined by phase tensor azimuth (Caldwell et
+al. [2004]) and invariants of the impedance tensor (Weaver et al. [2003]).</p>
+<p>The data is split into decades where the histogram for each is plotted in
+the form of a rose diagram with a range of 0 to 180 degrees.
+Where 0 is North and 90 is East.   The median angle of the period band is
+set in polar diagram.  The top row is the strike estimated from
+the invariants of the impedance tensor.  The bottom row is the azimuth
+estimated from the phase tensor.  If tipper is &#8216;y&#8217; then the 3rd row is the
+strike determined from the tipper, which is orthogonal to the induction
+arrow direction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>**fn_list**</strong> (<em>list of strings</em>) &#8211; full paths to .edi files to plot</li>
+<li><strong>**z_object**</strong> (<em>class mtpy.core.z.Z</em>) &#8211; object of mtpy.core.z.  If this is input be sure the
+attribute z.freq is filled.  <em>default</em> is None</li>
+<li><strong>**mt_object**</strong> (<em>class mtpy.imaging.mtplot.MTplot</em>) &#8211; object of mtpy.imaging.mtplot.MTplot
+<em>default</em> is None</li>
+<li><strong>**fignum**</strong> (<em>int</em>) &#8211; figure number to be plotted. <em>Default</em> is 1</li>
+<li><strong>**fs**</strong> (<em>float</em>) &#8211; font size for labels of plotting. <em>Default</em> is 10</li>
+<li><strong>**dpi**</strong> (<em>int</em>) &#8211; dots-per-inch resolution of figure, 300 is needed for
+publications. <em>Default</em> is 300</li>
+<li><strong>**thetar**</strong> (<em>float</em>) &#8211; angle of rotation clockwise positive. <em>Default</em> is 0</li>
+<li><strong>**ptol**</strong> (<em>float</em>) &#8211; Tolerance level to match periods from different edi files.
+<em>Default</em> is 0.05</li>
+<li><strong>**text_dict**</strong> &#8211; <dl class="docutils">
+<dt><a href="#id1"><span class="problematic" id="id2">*</span></a>&#8216;pad&#8217;</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">float</span><dd>padding of the angle label at the bottom of each
+polar diagram.  <em>Default</em> is 1.65</dd>
+<dt><a href="#id3"><span class="problematic" id="id4">*</span></a>&#8216;size&#8217;</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">float</span><dd>font size</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"><div class="first highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.imaging.mtplot</span> <span class="k">as</span> <span class="nn">mtplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edipath</span> <span class="o">=</span> <span class="s2">r&quot;/home/EDIFiles&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edilist</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">edipath</span><span class="p">,</span><span class="n">edi</span><span class="p">)</span> <span class="k">for</span> <span class="n">edi</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">edipath</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>       <span class="k">if</span> <span class="n">edi</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.edi&#39;</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#---plot rose plots in decades with tipper and an error floor on pt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strike</span> <span class="o">=</span> <span class="n">mtplot</span><span class="o">.</span><span class="n">plot_strike</span><span class="p">(</span><span class="n">fn_list</span><span class="o">=</span><span class="n">edilist</span><span class="p">,</span> <span class="n">plot_type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                                        <span class="n">pt_error_floor</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#---plot all decades into one rose plot for each estimation---</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strike</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strike</span><span class="o">.</span><span class="n">redraw_plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#---save the plot---</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strike</span><span class="o">.</span><span class="n">save_plot</span><span class="p">(</span><span class="s2">r&quot;/home/Figures&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="last">&#8216;Figure saved to /home/Figures/<a href="#id9"><span class="problematic" id="id10">StrikeAnalysis_</span></a>.pdf&#8217;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descname">-axhinv            matplotlib.axes instance for invariant strike</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-axhpt             matplotlib.axes instance for phase tensor strike</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-axhtip            matplotlib.axes instance for tipper strike</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-barinv            matplotlib.axes.bar instance for invariant strike</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-barpt             matplotlib.axes.bar instance for pt strike</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-bartr             matplotlib.axes.bar instance for tipper strike</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-bin_width         width of histogram bins in degrees</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-fig               matplotlib.figure instance of plot</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-fig_dpi           dots-per-inch resolution of figure</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-fig_num           number of figure being plotted</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-fig_size          size of figure in inches</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-fold              boolean to fold angles to range from [0,180] or</code></dt>
+<dd><p>[0,360]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-font_size         font size of axes tick labels</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-mt_list            list of mtplot.MTplot instances containing all</code></dt>
+<dd><p>the important information for each station</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-period_tolerance  tolerance to look for periods being plotted</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-plot_range        range of periods to plot</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-plot_tipper       string to tell program to plot induction arrows</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-plot_type         string to tell program how to plot strike angles</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-plot_yn           plot strike on instance creation</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-pt_error_floor    error floor to plot phase tensor strike, anything</code></dt>
+<dd><p>above this error will not be plotted</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-text_pad          padding between text and rose diagram</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-text_size         font size of text labeling the mode of the histogram</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">-title_dict        title dictionary</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">-plot                 plots the pseudo section</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">-redraw_plot          on call redraws the plot from scratch</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">-save_figure          saves figure to a file of given format</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">-update_plot          updates the plot while still active</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">-export_pt_params_to_file       writes parameters of the phase tensor and tipper</code></dt>
+<dd><p>to text files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.imaging.plotstrike.PlotStrike.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotstrike.html#PlotStrike.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotstrike.PlotStrike.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>rewrite the string builtin to give a useful message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.imaging.plotstrike.PlotStrike.redraw_plot">
+<code class="descname">redraw_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotstrike.html#PlotStrike.redraw_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotstrike.PlotStrike.redraw_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>use this function if you updated some attributes and want to re-plot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># change the color and marker of the xy components</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.imaging.mtplottools</span> <span class="k">as</span> <span class="nn">mtplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">mtplot</span><span class="o">.</span><span class="n">PlotResPhase</span><span class="p">(</span><span class="s1">r&#39;/home/MT/mt01.edi&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">xy_color</span> <span class="o">=</span> <span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">xy_marker</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">redraw_plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.imaging.plotstrike.PlotStrike.rot_z">
+<code class="descname">rot_z</code><a class="headerlink" href="#mtpy.imaging.plotstrike.PlotStrike.rot_z" title="Permalink to this definition">¶</a></dt>
+<dd><p>rotation angle(s)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.imaging.plotstrike.PlotStrike.save_plot">
+<code class="descname">save_plot</code><span class="sig-paren">(</span><em>save_fn</em>, <em>file_format='pdf'</em>, <em>orientation='portrait'</em>, <em>fig_dpi=None</em>, <em>close_plot='y'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotstrike.html#PlotStrike.save_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotstrike.PlotStrike.save_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>save_plot will save the figure to save_fn.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>**save_fn**</strong> (<em>string</em>) &#8211; <p>full path to save figure to, can be input as
+- directory path -&gt; the directory path to save to</p>
+<blockquote>
+<div>in which the file will be saved as
+save_fn/station_name_ResPhase.file_format</div></blockquote>
+<ul>
+<li>full path -&gt; file will be save to the given
+path.  If you use this option then the format
+will be assumed to be provided by the path</li>
+</ul>
+</li>
+<li><strong>**file_format**</strong> (<em>[ pdf | eps | jpg | png | svg ]</em>) &#8211; file type of saved figure pdf,svg,eps...</li>
+<li><strong>**orientation**</strong> (<em>[ landscape | portrait ]</em>) &#8211; orientation in which the file will be saved
+<em>default</em> is portrait</li>
+<li><strong>**fig_dpi**</strong> (<em>int</em>) &#8211; The resolution in dots-per-inch the file will be
+saved.  If None then the dpi will be that at
+which the figure was made.  I don&#8217;t think that
+it can be larger than dpi of the figure.</li>
+<li><strong>**close_plot**</strong> (<em>[ y | n ]</em>) &#8211; -&#8216;y&#8217; will close the plot after saving.
+-&#8216;n&#8217; will leave plot open</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># to save plot as jpg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.imaging.mtplottools</span> <span class="k">as</span> <span class="nn">mtplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">mtplot</span><span class="o">.</span><span class="n">PlotPhaseTensorMaps</span><span class="p">(</span><span class="n">edilist</span><span class="p">,</span><span class="n">freqspot</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">save_plot</span><span class="p">(</span><span class="s1">r&#39;/home/MT&#39;</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;jpg&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="last">&#8216;Figure saved to /home/MT/PTMaps/PTmap_phimin_10Hz.jpg&#8217;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.imaging.plotstrike.PlotStrike.update_plot">
+<code class="descname">update_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotstrike.html#PlotStrike.update_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotstrike.PlotStrike.update_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>update any parameters that where changed using the built-in draw from
+canvas.</p>
+<p>Use this if you change an of the .fig or axes properties</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># to change the grid lines to only be on the major ticks</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.imaging.mtplottools</span> <span class="k">as</span> <span class="nn">mtplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">mtplot</span><span class="o">.</span><span class="n">PlotResPhase</span><span class="p">(</span><span class="s1">r&#39;/home/MT/mt01.edi&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">[</span><span class="n">p1</span><span class="o">.</span><span class="n">axr</span><span class="p">,</span><span class="n">p1</span><span class="o">.</span><span class="n">axp</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.imaging.plotstrike.PlotStrike.writeTextFiles">
+<code class="descname">writeTextFiles</code><span class="sig-paren">(</span><em>save_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/imaging/plotstrike.html#PlotStrike.writeTextFiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.imaging.plotstrike.PlotStrike.writeTextFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the strike information as a text file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="master_index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Imaging</a><ul>
+<li><a class="reference internal" href="#module-mtpy.imaging.mtplot"><strong>Module MTPlot</strong></a><ul>
+<li><a class="reference internal" href="#mtplot">mtplot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/imaging.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="master_index.html">MTpy 0.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, J. Peacock, L. Krieger.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>

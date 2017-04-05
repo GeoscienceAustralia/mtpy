@@ -1,0 +1,798 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mtpy.core.mt &#8212; MTpy 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MTpy 0.2 documentation" href="../../../master_index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../master_index.html">MTpy 0.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mtpy.core.mt</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">===============</span>
+<span class="sd">MT</span>
+<span class="sd">===============</span>
+
+<span class="sd">    * Basic MT-object containing the very basic and necessary information for a</span>
+<span class="sd">      single MT station</span>
+
+<span class="sd">Created on Tue Jan 07 12:42:34 2014</span>
+
+<span class="sd">@author: jpeacock-pr</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ==============================================================================</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">mtpy.analysis.distortion</span> <span class="k">as</span> <span class="nn">MTdistortion</span>
+<span class="kn">import</span> <span class="nn">mtpy.analysis.pt</span> <span class="k">as</span> <span class="nn">MTpt</span>
+<span class="kn">import</span> <span class="nn">mtpy.analysis.zinvariants</span> <span class="k">as</span> <span class="nn">MTinv</span>
+<span class="kn">import</span> <span class="nn">mtpy.core.edi</span> <span class="k">as</span> <span class="nn">MTedi</span>
+<span class="kn">import</span> <span class="nn">mtpy.core.z</span> <span class="k">as</span> <span class="nn">MTz</span>
+<span class="kn">import</span> <span class="nn">mtpy.imaging.plot_mt_response</span> <span class="k">as</span> <span class="nn">plotresponse</span>
+<span class="kn">import</span> <span class="nn">mtpy.utils.exceptions</span> <span class="k">as</span> <span class="nn">MTex</span>
+<span class="kn">import</span> <span class="nn">mtpy.utils.format</span> <span class="k">as</span> <span class="nn">MTformat</span>
+<span class="kn">import</span> <span class="nn">mtpy.utils.latlon_utm_conversion</span> <span class="k">as</span> <span class="nn">MTutm</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">scipy</span>
+
+    <span class="n">scipy_version</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">scipy_version</span> <span class="o">&lt;</span> <span class="mi">140</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Note: need scipy version 0.14.0 or higher or interpolation &#39;</span> <span class="o">+</span>
+               <span class="s1">&#39;might not work.&#39;</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">scipy.interpolate</span> <span class="k">as</span> <span class="nn">spi</span>
+
+    <span class="n">interp_import</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Could not find scipy.interpolate, cannot use method interpolate&#39;</span> <span class="o">+</span>
+          <span class="s1">&#39;check installation you can get scipy from scipy.org.&#39;</span><span class="p">)</span>
+    <span class="n">interp_import</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="c1"># ==============================================================================</span>
+
+<div class="viewcode-block" id="MT"><a class="viewcode-back" href="../../../core.html#mtpy.core.mt.MT">[docs]</a><span class="k">class</span> <span class="nc">MT</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Basic object containing all information necessary for a single MT station</span>
+<span class="sd">    including</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ------------</span>
+<span class="sd">    ===================== =====================================================</span>
+<span class="sd">    Attribute             Description</span>
+<span class="sd">    ===================== =====================================================</span>
+<span class="sd">    name                  station name</span>
+<span class="sd">    lat                   station latitude in decimal degrees</span>
+<span class="sd">    lon                   station longitude in decimal degrees</span>
+<span class="sd">    elev                  station elevation in meters</span>
+<span class="sd">    Z                     mtpy.core.z.Z object for impedance tensor</span>
+<span class="sd">    Tipper                mtpy.core.z.Tipper object for tipper</span>
+<span class="sd">    date                  date collected</span>
+<span class="sd">    east                  station location in UTM coordinates assuming WGS-84</span>
+<span class="sd">    north                 station location in UTM coordinates assuming WGS-84</span>
+<span class="sd">    utm_zone              zone of UTM coordinates assuming WGS-84</span>
+<span class="sd">    ===================== =====================================================</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        * can change the utm grid by changing _utm_ellipsoid.  See</span>
+<span class="sd">          mtpy.utils.latlongutmconversion for details on reference</span>
+<span class="sd">          ellipsoids</span>
+
+<span class="sd">        * currently the information is assumed to come from an edi file</span>
+<span class="sd">          but can be extended later to .j files or something else or can</span>
+<span class="sd">          be input by hand</span>
+
+<span class="sd">        * if you set the coordinates east, north or utm_zone, be sure to</span>
+<span class="sd">          run _get_ll() to recalculate the latitude and longitude.</span>
+
+<span class="sd">        * can input the following key words to fill values in Z and Tipper:</span>
+<span class="sd">            - z_object        --&gt; mtpy.core.z.Z object</span>
+<span class="sd">            - z_array         --&gt; np.ndarray(n_freq, 2, 2, dtype=&#39;complex&#39;)</span>
+<span class="sd">            - z_err_array      --&gt; np.ndarray(n_freq, 2, 2)</span>
+<span class="sd">            - freq            --&gt; np.ndarray(n_freq)</span>
+<span class="sd">            - resistivity     --&gt; np.ndarray(n_freq, 2, 2) (linear scale)</span>
+<span class="sd">            - resistivity_err --&gt; np.ndarray(n_freq, 2, 2)</span>
+<span class="sd">            - phase           --&gt; np.ndarray(n_freq, 2, 2)</span>
+<span class="sd">            - phase_err       --&gt; np.ndarray(n_freq, 2, 2)</span>
+<span class="sd">            - tipper_object   --&gt; mtpy.core.z.Tipper object</span>
+<span class="sd">            - tipper          --&gt; np.ndarray(n_freq, 1, 2, dtype=&#39;complex&#39;)</span>
+<span class="sd">            - tipper_err       --&gt; np.ndarray(n_freq, 1, 2)</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    ------------</span>
+<span class="sd">    ===================== =====================================================</span>
+<span class="sd">    Methods               Description</span>
+<span class="sd">    ===================== =====================================================</span>
+<span class="sd">    write_edi_file        write an edi_file from the MT data</span>
+<span class="sd">    remove_distortion     remove distortion from the data following</span>
+<span class="sd">                          Bibby et al. [2005]</span>
+<span class="sd">    remove_static_shift   Shifts apparent resistivity curves up or down</span>
+<span class="sd">    interpolate           interpolates the impedance tensor and induction</span>
+<span class="sd">                          vectors onto a specified frequency array.</span>
+<span class="sd">    plot_mt_response      plots the MT response using mtpy.imaging.plotresponse</span>
+<span class="sd">    ===================== =====================================================</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    :Read from an .edi File: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; import mtpy.core.mt as mt</span>
+<span class="sd">        &gt;&gt;&gt; mt_obj = mt.MT(r&quot;/home/edi_files/s01.edi&quot;)</span>
+
+<span class="sd">    :Plot MT response: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; # plot all components of mt response and phase tensor</span>
+<span class="sd">        &gt;&gt;&gt; plot_obj = mt_obj.plot_mt_response(plot_num=2, plot_pt=&#39;y&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; # plot the tipper as well</span>
+<span class="sd">        &gt;&gt;&gt; plot_obj.plot_tipper = &#39;yri&#39;</span>
+<span class="sd">        &gt;&gt;&gt; plot_obj.redraw_plot()</span>
+
+<span class="sd">    :Remove Distortion: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; D, new_z = mt_obj.remove_distortion()</span>
+<span class="sd">        &gt;&gt;&gt; print D</span>
+<span class="sd">        &gt;&gt;&gt; np.array([[0.1, .9],</span>
+<span class="sd">        &gt;&gt;&gt; ...       [0.98, .43]])</span>
+<span class="sd">        &gt;&gt;&gt; # write a new edi file</span>
+<span class="sd">        &gt;&gt;&gt; mt_obj.write_edi_file(new_Z=new_z)</span>
+<span class="sd">        &gt;&gt;&gt; wrote file to: /home/edi_files/s01_RW.edi</span>
+
+<span class="sd">    :Remove Static Shift: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; new_z_obj = mt_obj.remove_static_shift(ss_x=.78, ss_y=1.1)</span>
+<span class="sd">        &gt;&gt;&gt; # write a new edi file</span>
+<span class="sd">        &gt;&gt;&gt; mt_obj.write_edi_file(new_fn=r&quot;/home/edi_files/s01_ss.edi&quot;,</span>
+<span class="sd">        &gt;&gt;&gt;                       new_Z=new_z)</span>
+<span class="sd">        &gt;&gt;&gt; wrote file to: /home/edi_files/s01_ss.edi</span>
+
+<span class="sd">    :Interpolate: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; new_freq = np.logspace(-3, 3, num=24)</span>
+<span class="sd">        &gt;&gt;&gt; new_z_obj, new_tipper_obj = mt_obj.interpolate(new_freq)</span>
+<span class="sd">        &gt;&gt;&gt; mt_obj.write_edi_file(new_Z=new_z_obj, new_Tipper=new_tipper_obj)</span>
+<span class="sd">        &gt;&gt;&gt; wrote file to: /home/edi_files/s01_RW.edi</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span> <span class="o">=</span> <span class="n">fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;station&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lat</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elev</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;elev&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">MTz</span><span class="o">.</span><span class="n">Z</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;Tipper&#39;</span><span class="p">,</span> <span class="n">MTz</span><span class="o">.</span><span class="n">Tipper</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_utm_zone</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;utm_zone&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_east</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;east&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_north</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;north&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_angle</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;rotation_angle&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># provide key words to fill values if an edi file does not exist</span>
+        <span class="k">if</span> <span class="s1">&#39;z_object&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;z_object&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;z_array&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;z_array&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;z_err_array&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="o">.</span><span class="n">z_err</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;z_err_array&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;freq&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="o">.</span><span class="n">freq</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;freq&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span><span class="o">.</span><span class="n">freq</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;freq&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;tipper_object&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tipper_object&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;tipper&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span><span class="o">.</span><span class="n">tipper</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tipper&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;tipper_err&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span><span class="o">.</span><span class="n">tipper_err</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tipper_err&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;resisitivity&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="o">.</span><span class="n">resistivity</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;resistivity&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;resisitivity_err&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="o">.</span><span class="n">resistivity_err</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;resistivity_err&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;phase&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phase&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;phase_err&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;phase_err&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span> <span class="o">=</span> <span class="n">MTedi</span><span class="o">.</span><span class="n">Edi</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zinv</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_utm_ellipsoid</span> <span class="o">=</span> <span class="mi">23</span>
+
+        <span class="c1"># --&gt; read in the file name given</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># set functions</span>
+    <span class="c1"># ==========================================================================</span>
+    <span class="k">def</span> <span class="nf">_set_lat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latitude</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set latitude making sure the input is in decimal degrees</span>
+
+<span class="sd">        upon setting utm coordinates are recalculated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lat</span> <span class="o">=</span> <span class="n">MTformat</span><span class="o">.</span><span class="n">_assert_position_format</span><span class="p">(</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="n">latitude</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_utm</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">longitude</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set longitude making sure the input is in decimal degrees</span>
+
+<span class="sd">        upon setting utm coordinates are recalculated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lon</span> <span class="o">=</span> <span class="n">MTformat</span><span class="o">.</span><span class="n">_assert_position_format</span><span class="p">(</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="n">longitude</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_utm</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_elev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elevation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set elevation, should be input as meters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elev</span> <span class="o">=</span> <span class="n">elevation</span>
+
+    <span class="k">def</span> <span class="nf">_set_east</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">easting</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set easting in meters</span>
+
+<span class="sd">        upon setting lat and lon are recalculated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_east</span> <span class="o">=</span> <span class="n">easting</span>
+
+    <span class="k">def</span> <span class="nf">_set_north</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">northing</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set northing in meters</span>
+
+<span class="sd">        upon setting lat and lon are recalculated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_north</span> <span class="o">=</span> <span class="n">northing</span>
+
+    <span class="k">def</span> <span class="nf">_set_utm_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">utm_zone</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set UTM zone</span>
+
+<span class="sd">        upon setting lat and lon are recalculated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_utm_zone</span> <span class="o">=</span> <span class="n">utm_zone</span>
+
+    <span class="k">def</span> <span class="nf">_set_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set filename, currently only support .edi files</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;edi&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_edi_file</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">not_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">]:]</span>
+            <span class="k">raise</span> <span class="n">MTex</span><span class="o">.</span><span class="n">MTpyError_file_handling</span><span class="p">(</span><span class="s1">&#39;File &#39;</span> <span class="o">+</span>
+                                               <span class="s1">&#39;type </span><span class="si">{0}</span><span class="s1"> not supported yet.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">not_fn</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_set_rotation_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_r</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set rotation angle in degrees assuming North is 0 measuring clockwise</span>
+<span class="sd">        positive to East as 90.</span>
+
+<span class="sd">        upon setting rotates Z and Tipper</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_angle</span> <span class="o">=</span> <span class="n">theta_r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">theta_r</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">theta_r</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pt</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">theta_r</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zinv</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">theta_r</span><span class="p">)</span>
+
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Rotated Z, Tipper, Phase Tensor and Zinvariants by&quot;</span>
+               <span class="s2">&quot;</span><span class="si">{0:.3f}</span><span class="s2"> degrees&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rotation_angle</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_set_Z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set z_object</span>
+
+<span class="sd">        recalculate phase tensor and invariants, which shouldn&#39;t change except</span>
+<span class="sd">        for strike angle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span> <span class="o">=</span> <span class="n">z_object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="o">.</span><span class="n">_compute_res_phase</span><span class="p">()</span>
+
+        <span class="c1"># --&gt; compute phase tensor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pt</span> <span class="o">=</span> <span class="n">MTpt</span><span class="o">.</span><span class="n">PhaseTensor</span><span class="p">(</span><span class="n">z_object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="o">.</span><span class="n">freq</span><span class="p">)</span>
+
+        <span class="c1"># --&gt; compute invariants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zinv</span> <span class="o">=</span> <span class="n">MTinv</span><span class="o">.</span><span class="n">Zinvariants</span><span class="p">(</span><span class="n">z_object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_Tipper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t_object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set tipper object</span>
+
+<span class="sd">        recalculate tipper angle and magnitude</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span> <span class="o">=</span> <span class="n">t_object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span><span class="o">.</span><span class="n">_compute_amp_phase</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span><span class="o">.</span><span class="n">_compute_mag_direction</span><span class="p">()</span>
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># get functions</span>
+    <span class="c1"># ==========================================================================</span>
+    <span class="k">def</span> <span class="nf">_get_lat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lat</span>
+
+    <span class="k">def</span> <span class="nf">_get_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lon</span>
+
+    <span class="k">def</span> <span class="nf">_get_elev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elev</span>
+
+    <span class="k">def</span> <span class="nf">_get_east</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_east</span>
+
+    <span class="k">def</span> <span class="nf">_get_north</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_north</span>
+
+    <span class="k">def</span> <span class="nf">_get_utm_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utm_zone</span>
+
+    <span class="k">def</span> <span class="nf">_get_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span>
+
+    <span class="k">def</span> <span class="nf">_get_rotation_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_angle</span>
+
+    <span class="k">def</span> <span class="nf">_get_Z</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span>
+
+    <span class="k">def</span> <span class="nf">_get_Tipper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span>
+
+    <span class="c1"># ==========================================================================</span>
+    <span class="c1"># set properties</span>
+    <span class="c1"># ==========================================================================</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_lat</span><span class="p">,</span> <span class="n">_set_lat</span><span class="p">,</span>
+                   <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;latitude of station in decimal degrees&quot;</span><span class="p">)</span>
+
+    <span class="n">lon</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_lon</span><span class="p">,</span> <span class="n">_set_lon</span><span class="p">,</span>
+                   <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;longitude of station in decimal degrees&quot;</span><span class="p">)</span>
+
+    <span class="n">elev</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_elev</span><span class="p">,</span> <span class="n">_set_elev</span><span class="p">,</span>
+                    <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;elevation in meters&quot;</span><span class="p">)</span>
+
+    <span class="n">east</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_east</span><span class="p">,</span> <span class="n">_set_east</span><span class="p">,</span>
+                    <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;easting in meters of station location on UTM grid&quot;</span><span class="p">)</span>
+
+    <span class="n">north</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_north</span><span class="p">,</span> <span class="n">_set_north</span><span class="p">,</span>
+                     <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;northing in meters of station location on UTM grid&quot;</span><span class="p">)</span>
+
+    <span class="n">utm_zone</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_utm_zone</span><span class="p">,</span> <span class="n">_set_utm_zone</span><span class="p">,</span>
+                        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;UTM zone&quot;</span><span class="p">)</span>
+
+    <span class="n">fn</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_fn</span><span class="p">,</span> <span class="n">_set_fn</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;name of file containing MT info&quot;</span><span class="p">)</span>
+
+    <span class="n">rotation_angle</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_rotation_angle</span><span class="p">,</span> <span class="n">_set_rotation_angle</span><span class="p">,</span>
+                              <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;rotation angle of Z and Tipper&quot;</span><span class="p">)</span>
+
+    <span class="n">Z</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_Z</span><span class="p">,</span> <span class="n">_set_Z</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;impedence tensor object&quot;</span><span class="p">)</span>
+
+    <span class="n">Tipper</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_Tipper</span><span class="p">,</span> <span class="n">_set_Tipper</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Tipper object&quot;</span><span class="p">)</span>
+
+    <span class="c1"># --&gt; conversion between utm and ll</span>
+    <span class="k">def</span> <span class="nf">_get_utm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get utm coordinates from lat and lon</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">utm_zone</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">east</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">north</span> <span class="o">=</span> <span class="n">MTutm</span><span class="o">.</span><span class="n">LLtoUTM</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_utm_ellipsoid</span><span class="p">,</span>
+                                                             <span class="bp">self</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lon</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_ll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get lat and long from utm</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lon</span> <span class="o">=</span> <span class="n">MTutm</span><span class="o">.</span><span class="n">UTMtoLL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_utm_ellipsoid</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">north</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">east</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">utm_zone</span><span class="p">)</span>
+
+    <span class="c1"># --&gt; read in edi file</span>
+    <span class="k">def</span> <span class="nf">_read_edi_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        read in edi file and set attributes accordingly</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span> <span class="o">=</span> <span class="n">MTedi</span><span class="o">.</span><span class="n">Edi</span><span class="p">(</span><span class="n">edi_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">lat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">lon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">elev</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">Z</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">Tipper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">station</span>
+
+        <span class="c1"># --&gt; get utm coordinates from lat and lon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_utm</span><span class="p">()</span>
+
+        <span class="c1"># --&gt; make sure things are ordered from high frequency to low</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_freq_order</span><span class="p">()</span>
+
+        <span class="c1"># --&gt; compute phase tensor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pt</span> <span class="o">=</span> <span class="n">MTpt</span><span class="o">.</span><span class="n">PhaseTensor</span><span class="p">(</span><span class="n">z_object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">)</span>
+
+        <span class="c1"># --&gt; compute invariants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zinv</span> <span class="o">=</span> <span class="n">MTinv</span><span class="o">.</span><span class="n">Zinvariants</span><span class="p">(</span><span class="n">z_object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span>
+
+    <span class="c1"># --&gt; write edi file</span>
+<div class="viewcode-block" id="MT.write_edi_file"><a class="viewcode-back" href="../../../core.html#mtpy.core.mt.MT.write_edi_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_edi_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_Z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_Tipper</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        write a new edi file if things have changed.  Note if new_Z or</span>
+<span class="sd">        new_Tipper are not None, they are not changed in MT object, you</span>
+<span class="sd">        need to change them manually if you want them to be changed.</span>
+<span class="sd">        Similarly, the new function name does not change the MT objecte fn</span>
+<span class="sd">        attribute but does change MT.edi_object.fn attribute.</span>
+
+<span class="sd">        Arguments</span>
+<span class="sd">        --------------</span>
+
+<span class="sd">            *new_fn* : string</span>
+<span class="sd">                       full path to new file name</span>
+
+<span class="sd">            *new_Z* : mtpy.core.Z object</span>
+<span class="sd">                      a new impedance tensor object to be written</span>
+
+<span class="sd">            *new_Tipper* : mtpy.core.Z.Tipper object</span>
+<span class="sd">                           a new Tipper object to be written</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">new_Z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">Z</span> <span class="o">=</span> <span class="n">new_Z</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">Z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span>
+
+        <span class="k">if</span> <span class="n">new_Tipper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">Tipper</span> <span class="o">=</span> <span class="n">new_Tipper</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">Tipper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Tipper</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">station</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">zrot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angle</span>
+
+        <span class="k">if</span> <span class="n">new_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_RW&#39;</span> <span class="o">+</span> <span class="s1">&#39;.edi&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">edi_object</span><span class="o">.</span><span class="n">write_edi_file</span><span class="p">(</span><span class="n">new_edi_fn</span><span class="o">=</span><span class="n">new_fn</span><span class="p">)</span></div>
+
+    <span class="c1"># --&gt; check the order of frequencies</span>
+    <span class="k">def</span> <span class="nf">_check_freq_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check to make sure the Z and Tipper arrays are ordered such that</span>
+<span class="sd">        the first index corresponds to the highest frequency and the last</span>
+<span class="sd">        index corresponds to the lowest freqeuncy.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="nb">print</span> <span class="s1">&#39;Flipping arrays to be ordered from short period to long&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">copy</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">z_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">z_err</span><span class="o">.</span><span class="n">copy</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="o">.</span><span class="n">copy</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">tipper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">tipper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">tipper</span><span class="o">.</span><span class="n">copy</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">tipper_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">tipper_err</span><span class="o">.</span><span class="n">copy</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">freq</span><span class="o">.</span><span class="n">copy</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<div class="viewcode-block" id="MT.remove_distortion"><a class="viewcode-back" href="../../../core.html#mtpy.core.mt.MT.remove_distortion">[docs]</a>    <span class="k">def</span> <span class="nf">remove_distortion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        remove distortion following Bibby et al. [2005].</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        ----------</span>
+<span class="sd">        :Remove Distortion and Write New .edi: ::</span>
+
+<span class="sd">            &gt;&gt;&gt; import mtpy.core.mt as mt</span>
+<span class="sd">            &gt;&gt;&gt; mt1 = mt.MT(fn=r&quot;/home/mt/edi_files/mt01.edi&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; D, new_z = mt1.remove_distortion()</span>
+<span class="sd">            &gt;&gt;&gt; mt1.write_edi_file(new_fn=r&quot;/home/mt/edi_files/mt01_dr.edi&quot;,\</span>
+<span class="sd">            &gt;&gt;&gt;                    new_Z=new_z)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dummy_z_obj</span> <span class="o">=</span> <span class="n">MTz</span><span class="o">.</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span>
+        <span class="n">D</span><span class="p">,</span> <span class="n">new_z_object</span> <span class="o">=</span> <span class="n">MTdistortion</span><span class="o">.</span><span class="n">remove_distortion</span><span class="p">(</span><span class="n">z_object</span><span class="o">=</span><span class="n">dummy_z_obj</span><span class="p">,</span>
+                                                         <span class="n">num_freq</span><span class="o">=</span><span class="n">num_freq</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">D</span><span class="p">,</span> <span class="n">new_z_object</span></div>
+
+<div class="viewcode-block" id="MT.remove_static_shift"><a class="viewcode-back" href="../../../core.html#mtpy.core.mt.MT.remove_static_shift">[docs]</a>    <span class="k">def</span> <span class="nf">remove_static_shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ss_x</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">ss_y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove static shift from the apparent resistivity</span>
+
+<span class="sd">        Assume the original observed tensor Z is built by a static shift S</span>
+<span class="sd">        and an unperturbated &quot;correct&quot; Z0 :</span>
+
+<span class="sd">             * Z = S * Z0</span>
+
+<span class="sd">        therefore the correct Z will be :</span>
+<span class="sd">            * Z0 = S^(-1) * Z</span>
+
+
+<span class="sd">        Arguments</span>
+<span class="sd">        ------------</span>
+
+<span class="sd">            *ss_x* : float</span>
+<span class="sd">                    correction factor for x component</span>
+
+<span class="sd">            *ss_y* : float</span>
+<span class="sd">                   correction factor for y component</span>
+
+<span class="sd">        .. note:: The factors are in resistivity scale, so the</span>
+<span class="sd">                  entries of  the matrix &quot;S&quot; need to be given by their</span>
+<span class="sd">                  square-roots!</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ------------</span>
+
+<span class="sd">           *new_z* : new z array</span>
+
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        ----------</span>
+<span class="sd">        :Remove Static Shift: ::</span>
+
+<span class="sd">            &gt;&gt;&gt; import mtpy.core.mt as mt</span>
+<span class="sd">            &gt;&gt;&gt; mt_obj = mt.MT(r&quot;/home/mt/mt01.edi&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; new_z_obj = mt.remove_static_shift(ss_x=.5, ss_y=1.2)</span>
+<span class="sd">            &gt;&gt;&gt; mt_obj.write_edi_file(new_fn=r&quot;/home/mt/mt01_ss.edi&quot;,</span>
+<span class="sd">            &gt;&gt;&gt; ...                   new_Z=new_z_obj)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">s_array</span><span class="p">,</span> <span class="n">new_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">remove_ss</span><span class="p">(</span><span class="n">reduce_res_factor_x</span><span class="o">=</span><span class="n">ss_x</span><span class="p">,</span>
+                                          <span class="n">reduce_res_factor_y</span><span class="o">=</span><span class="n">ss_y</span><span class="p">)</span>
+
+        <span class="n">new_z_obj</span> <span class="o">=</span> <span class="n">MTz</span><span class="o">.</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span>
+        <span class="n">new_z_obj</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">new_z</span>
+
+        <span class="k">return</span> <span class="n">new_z_obj</span></div>
+
+<div class="viewcode-block" id="MT.interpolate"><a class="viewcode-back" href="../../../core.html#mtpy.core.mt.MT.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_freq_array</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interpolate the impedance tensor onto different frequencies</span>
+
+
+<span class="sd">        Arguments</span>
+<span class="sd">        ------------</span>
+
+<span class="sd">            *new_freq_array* : np.ndarray</span>
+<span class="sd">                               a 1-d array of frequencies to interpolate on</span>
+<span class="sd">                               to.  Must be with in the bounds of the existing</span>
+<span class="sd">                               frequency range, anything outside and an error</span>
+<span class="sd">                               will occur.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -----------</span>
+
+<span class="sd">            *new_z_object* : mtpy.core.z.Z object</span>
+<span class="sd">                             a new impedance object with the corresponding</span>
+<span class="sd">                             frequencies and components.</span>
+
+<span class="sd">            *new_tipper_object* : mtpy.core.z.Tipper object</span>
+<span class="sd">                             a new tipper object with the corresponding</span>
+<span class="sd">                             frequencies and components.</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        :Interpolate: ::</span>
+
+<span class="sd">            &gt;&gt;&gt; import mtpy.core.mt as mt</span>
+<span class="sd">            &gt;&gt;&gt; edi_fn = r&quot;/home/edi_files/mt_01.edi&quot;</span>
+<span class="sd">            &gt;&gt;&gt; mt_obj = mt.MT(edi_fn)</span>
+<span class="sd">            &gt;&gt;&gt; # create a new frequency range to interpolate onto</span>
+<span class="sd">            &gt;&gt;&gt; new_freq = np.logspace(-3, 3, 24)</span>
+<span class="sd">            &gt;&gt;&gt; new_z_object, new_tipper_obj = mt_obj.interpolate(new_freq)</span>
+<span class="sd">            &gt;&gt;&gt; mt_obj.write_edi_file(new_fn=r&quot;/home/edi_files/mt_01_interp.edi&quot;,</span>
+<span class="sd">            &gt;&gt;&gt; ...                   new_Z=new_z_object,</span>
+<span class="sd">            &gt;&gt;&gt; ...                   new_Tipper=new_tipper_object)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if the interpolation module has not been loaded return</span>
+        <span class="k">if</span> <span class="n">interp_import</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;could not interpolate, need to install scipy&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># make sure the input is a numpy array</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_freq_array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">new_freq_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_freq_array</span><span class="p">)</span>
+
+        <span class="c1"># check the bounds of the new frequency array</span>
+        <span class="k">if</span> <span class="n">bounds_error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">new_freq_array</span><span class="o">.</span><span class="n">min</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;New frequency minimum of </span><span class="si">{0:.5g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new_freq_array</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">+</span>
+                                 <span class="s1">&#39; is smaller than old frequency minimum of </span><span class="si">{0:.5g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">+</span>
+                                 <span class="s1">&#39;.  The new frequency range needs to be within the &#39;</span> <span class="o">+</span>
+                                 <span class="s1">&#39;bounds of the old one.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">new_freq_array</span><span class="o">.</span><span class="n">max</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;New frequency maximum of </span><span class="si">{0:.5g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new_freq_array</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="o">+</span>
+                                 <span class="s1">&#39;is smaller than old frequency maximum of </span><span class="si">{0:.5g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="o">+</span>
+                                 <span class="s1">&#39;.  The new frequency range needs to be within the &#39;</span> <span class="o">+</span>
+                                 <span class="s1">&#39;bounds of the old one.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># make a new Z object</span>
+        <span class="n">new_Z</span> <span class="o">=</span> <span class="n">MTz</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="n">z_array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">new_freq_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                                       <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">),</span>
+                      <span class="n">z_err_array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">new_freq_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                      <span class="n">freq</span><span class="o">=</span><span class="n">new_freq_array</span><span class="p">)</span>
+
+        <span class="n">new_Tipper</span> <span class="o">=</span> <span class="n">MTz</span><span class="o">.</span><span class="n">Tipper</span><span class="p">(</span><span class="n">tipper_array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">new_freq_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                                                      <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">),</span>
+                                <span class="n">tipper_err_array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">new_freq_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+            <span class="n">freq</span><span class="o">=</span><span class="n">new_freq_array</span><span class="p">)</span>
+
+        <span class="c1"># interpolate the impedance tensor</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                <span class="c1"># need to sort array for old version of interp1d otherwise</span>
+                <span class="c1"># frequencies fall out of bounds</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">)</span>
+                <span class="n">z_func_real</span> <span class="o">=</span> <span class="n">spi</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">ind</span><span class="p">][:,</span> <span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
+                                           <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;slinear&#39;</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+                <span class="n">z_func_imag</span> <span class="o">=</span> <span class="n">spi</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">ind</span><span class="p">][:,</span> <span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span>
+                                           <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;slinear&#39;</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+                <span class="n">new_Z</span><span class="o">.</span><span class="n">z</span><span class="p">[:,</span> <span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">z_func_real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">new_freq_array</span><span class="p">))</span> <span class="o">+</span> \
+                    <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">z_func_imag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">new_freq_array</span><span class="p">))</span>
+
+                <span class="n">z_func_err</span> <span class="o">=</span> <span class="n">spi</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">z_err</span><span class="p">[</span><span class="n">ind</span><span class="p">][:,</span> <span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">],</span>
+                                          <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;slinear&#39;</span><span class="p">)</span>
+                <span class="n">new_Z</span><span class="o">.</span><span class="n">z_err</span><span class="p">[:,</span> <span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">z_func_err</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">new_freq_array</span><span class="p">))</span>
+
+        <span class="c1"># if there is not tipper than skip</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">tipper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">new_Z</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="c1"># interpolate the Tipper</span>
+        <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">t_func_real</span> <span class="o">=</span> <span class="n">spi</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">tipper</span><span class="p">[</span><span class="n">ind</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
+                                       <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;slinear&#39;</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+            <span class="n">t_func_imag</span> <span class="o">=</span> <span class="n">spi</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">tipper</span><span class="p">[</span><span class="n">ind</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span>
+                                       <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;slinear&#39;</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+            <span class="n">new_Tipper</span><span class="o">.</span><span class="n">tipper</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_func_real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">new_freq_array</span><span class="p">))</span> <span class="o">+</span> \
+                <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">t_func_imag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">new_freq_array</span><span class="p">))</span>
+
+            <span class="n">t_func_err</span> <span class="o">=</span> <span class="n">spi</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">freq</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">Tipper</span><span class="o">.</span><span class="n">tipper_err</span><span class="p">[</span><span class="n">ind</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">jj</span><span class="p">],</span>
+                                      <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;slinear&#39;</span><span class="p">)</span>
+            <span class="n">new_Tipper</span><span class="o">.</span><span class="n">tipper_err</span><span class="p">[</span>
+                <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_func_err</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">new_freq_array</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">new_Z</span><span class="p">,</span> <span class="n">new_Tipper</span></div>
+
+<div class="viewcode-block" id="MT.plot_mt_response"><a class="viewcode-back" href="../../../core.html#mtpy.core.mt.MT.plot_mt_response">[docs]</a>    <span class="k">def</span> <span class="nf">plot_mt_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a mtpy.imaging.plot_mt_response.PlotMTResponse object</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        ------------</span>
+<span class="sd">        :Plot Response: ::</span>
+
+<span class="sd">            &gt;&gt;&gt; mt_obj = mt.MT(edi_file)</span>
+<span class="sd">            &gt;&gt;&gt; pr = mt.plot_mt_response()</span>
+<span class="sd">            &gt;&gt;&gt; # if you need more infor on plot_mt_response</span>
+<span class="sd">            &gt;&gt;&gt; help(pr)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">plot_obj</span> <span class="o">=</span> <span class="n">plotresponse</span><span class="o">.</span><span class="n">PlotMTResponse</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">plot_obj</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">plot_obj</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../master_index.html">MTpy 0.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, J. Peacock, L. Krieger.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,924 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Analysis &#8212; MTpy 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MTpy 0.2 documentation" href="master_index.html" />
+    <link rel="next" title="Modeling" href="modeling.html" />
+    <link rel="prev" title="Core:" href="core.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modeling.html" title="Modeling"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Core:"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="master_index.html">MTpy 0.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="analysis">
+<h1>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-mtpy.analysis.distortion">
+<span id="module-distortion"></span><h2><strong>Module Distortion</strong><a class="headerlink" href="#module-mtpy.analysis.distortion" title="Permalink to this headline">¶</a></h2>
+<p>mtpy/analysis/distortion.py</p>
+<p>Contains functions for the determination of (galvanic) distortion of impedance tensors.
+The methods used follow Bibby et al 2005.
+As it has been pointed out in that paper, there are various possibilities for
+constraining the solution, esp. in the 2D case.</p>
+<p>Here we just implement the &#8216;most basic&#8217; variety for the calculation of the
+distortion tensor. Other methods can be implemented, but since the optimal assumptions and
+constraints depend on the application, the actual place for further functions
+is in an independent, personalised module.</p>
+<p>Algorithm Details:
+Finding the distortion of a Z array. Using the phase tensor
+so, Z arrays are transformed into PTs first), following Bibby et al. 2005.</p>
+<p>First, try to find periods that indicate 1D. From them determine D incl.
+the g-factor by calculatiing a weighted mean. The g is assumed in order to
+cater for the missing unknown in the system, it is here set to det(X)^0.5.
+After that is found, the function no_distortion from the Z module can be
+called to obtain the unperturbated regional impedance tensor.</p>
+<p>Second, if there are no 1D sections: Find the strike angle, then rotate the
+Z to the principal axis. In order to do that, use the rotate(-strike) method
+of the Z module. Then take the real part of the rotated Z. As in the 1D case,
+we need an assumption to get rid of the (2) unknowns:
+set det(D) = P and det(D) = T, where P,T can be chosen. Common choice is to
+set  one of P,T to an arbitrary value (e.g. 1). Then check, for which values
+of the other parameter  S^2 = T^2+4*P*X_12*X_21/det(X) &gt; 0 holds.</p>
+<p>&#64;UofA, 2013  (LK)</p>
+<p>Edited by JP, 2016</p>
+<dl class="function">
+<dt id="mtpy.analysis.distortion.find_1d_distortion">
+<code class="descclassname">mtpy.analysis.distortion.</code><code class="descname">find_1d_distortion</code><span class="sig-paren">(</span><em>z_object</em>, <em>include_non1d=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/distortion.html#find_1d_distortion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.distortion.find_1d_distortion" title="Permalink to this definition">¶</a></dt>
+<dd><p>find 1D distortion tensor from z object</p>
+<p>ONly use the 1D part of the Z to determine D.
+Treat all frequencies as 1D, if  &#8220;include_non1d = True&#8221;.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mtpy.analysis.distortion.find_2d_distortion">
+<code class="descclassname">mtpy.analysis.distortion.</code><code class="descname">find_2d_distortion</code><span class="sig-paren">(</span><em>z_object</em>, <em>include_non2d=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/distortion.html#find_2d_distortion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.distortion.find_2d_distortion" title="Permalink to this definition">¶</a></dt>
+<dd><p>find 2D distortion tensor from z object</p>
+<p>ONly use the 2D part of the Z to determine D.
+Treat all frequencies as 2D, if  &#8220;include_non2d = True&#8221;.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mtpy.analysis.distortion.find_distortion">
+<code class="descclassname">mtpy.analysis.distortion.</code><code class="descname">find_distortion</code><span class="sig-paren">(</span><em>z_object</em>, <em>g='det'</em>, <em>num_freq=None</em>, <em>lo_dims=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/distortion.html#find_distortion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.distortion.find_distortion" title="Permalink to this definition">¶</a></dt>
+<dd><p>find optimal distortion tensor from z object</p>
+<p>automatically determine the dimensionality over all frequencies, then find
+the appropriate distortion tensor D</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>**z_object**</strong> (<em>mtpy.core.z object</em>) &#8211; </li>
+<li><strong>**g**</strong> (<em>[ 'det' | '01' | '10 ]</em>) &#8211; type of distortion correction
+<em>default</em> is &#8216;det&#8217;</li>
+<li><strong>**num_freq**</strong> (<em>int</em>) &#8211; number of frequencies to look for distortion from
+the index 0
+<em>default</em> is None, meaning all frequencies are used</li>
+<li><strong>**lo_dims**</strong> (<em>list</em>) &#8211; list of dimensions for each frequency
+<em>default</em> is None, meaning calculated from data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>**distortion**</strong> (<em>np.ndarray(2, 2)</em>) &#8211; distortion array all real values</li>
+<li><strong>**distortion_err**</strong> (<em>np.ndarray(2, 2)</em>) &#8211; distortion error array</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Estimate Distortion:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.analysis.distortion</span> <span class="k">as</span> <span class="nn">distortion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dis</span><span class="p">,</span> <span class="n">dis_err</span> <span class="o">=</span> <span class="n">distortion</span><span class="o">.</span><span class="n">find_distortion</span><span class="p">(</span><span class="n">z_obj</span><span class="p">,</span> <span class="n">num_freq</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="mtpy.analysis.distortion.remove_distortion">
+<code class="descclassname">mtpy.analysis.distortion.</code><code class="descname">remove_distortion</code><span class="sig-paren">(</span><em>z_array=None</em>, <em>z_object=None</em>, <em>num_freq=None</em>, <em>g='det'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/distortion.html#remove_distortion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.distortion.remove_distortion" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove distortion from an impedance tensor using the method outlined by
+Bibby et al., [2005].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>**z_array**</strong> (<em>np.ndarray((nf, 2, 2))</em>) &#8211; numpy array of impedance tensor
+<em>default</em> is None</li>
+<li><strong>**z_object**</strong> (<em>mtpy.core.z object</em>) &#8211; <em>default</em> is None</li>
+<li><strong>**num_freq**</strong> (<em>int</em>) &#8211; number of frequecies to look for distortion
+<em>default</em> is None, meaning look over all frequencies</li>
+<li><strong>**g**</strong> (<em>[ 'det' | '01' | '10 ]</em>) &#8211; type of distortion to look for
+<em>default</em> is &#8216;det&#8217;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>**distortion**</strong> (<em>np.ndarray (2, 2)</em>) &#8211; distortion array</li>
+<li><strong>**new_z_obj**</strong> (<em>mtpy.core.z</em>) &#8211; z object with distortion removed and error calculated</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Remove Distortion:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.analysis.distortion</span> <span class="k">as</span> <span class="nn">distortion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">,</span> <span class="n">new_z</span> <span class="o">=</span> <span class="n">distortion</span><span class="o">.</span><span class="n">remove_distortion</span><span class="p">(</span><span class="n">z_object</span><span class="o">=</span><span class="n">z_obj</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mtpy.analysis.geometry">
+<span id="module-geometry"></span><h2><strong>Module Geometry</strong><a class="headerlink" href="#module-mtpy.analysis.geometry" title="Permalink to this headline">¶</a></h2>
+<p>mtpy/mtpy/analysis/geometry.py</p>
+<p>Contains classes and functions for handling geometry analysis of impedance tensors:</p>
+<p>dimensionality, strike directions, alphas/skews/...</p>
+<blockquote>
+<div><ul class="simple">
+<li>1d - 2d : excentricity of ellipses</li>
+<li>2d - 3d : skew &lt; threshold (to be given as argument)</li>
+<li>strike: frequency - depending angle (incl. 90degree ambiguity)</li>
+</ul>
+</div></blockquote>
+<p>&#64;UofA, 2013(LK)</p>
+<p>Edited by JP, 2016</p>
+<dl class="function">
+<dt id="mtpy.analysis.geometry.dimensionality">
+<code class="descclassname">mtpy.analysis.geometry.</code><code class="descname">dimensionality</code><span class="sig-paren">(</span><em>z_array=None</em>, <em>z_object=None</em>, <em>pt_array=None</em>, <em>pt_object=None</em>, <em>skew_threshold=5</em>, <em>eccentricity_threshold=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/geometry.html#dimensionality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.geometry.dimensionality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Esitmate dimensionality of an impedance tensor, frequency by frequency.</p>
+<p>Dimensionality is estimated from the phase tensor given the threshold
+criteria on the skew angle and eccentricity following Bibby et al., 2005
+and Booker, 2014.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>**z_array**</strong> (<em>np.ndarray(nf, 2, 2)</em>) &#8211; numpy array of impedance elements
+<em>default</em> is None</li>
+<li><strong>**z_object**</strong> (<a class="reference internal" href="core.html#mtpy.core.z.Z" title="mtpy.core.z.Z"><em>mtpy.core.z.Z</em></a>) &#8211; z_object
+<em>default</em> is None</li>
+<li><strong>**pt_array**</strong> (<em>np.ndarray(nf, 2, 2)</em>) &#8211; numpy array of phase tensor elements
+<em>default</em> is None</li>
+<li><strong>**pt_object**</strong> (<em>mtpy.analysis.pt.PT</em>) &#8211; phase tensor object
+<em>default</em> is None</li>
+<li><strong>**skew_threshold**</strong> (<em>float</em>) &#8211; threshold on the skew angle in degrees, anything
+above this value is 3-D or azimuthally anisotropic
+<em>default</em> is 5 degrees</li>
+<li><strong>**eccentricity_threshold**</strong> (<em>float</em>) &#8211; threshold on eccentricty in dimensionaless
+units, anything below this value is 1-D
+<em>default</em> is 0.1</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>**dimensions**</strong> &#8211; an array of dimesions for each frequency
+the values are [ 1 | 2 | 3 ]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.ndarray(nf, dtype=int)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Estimate Dimesions:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.analysis.geometry</span> <span class="k">as</span> <span class="nn">geometry</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dim</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">(</span><span class="n">z_object</span><span class="o">=</span><span class="n">z_obj</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="n">skew_threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mtpy.analysis.geometry.eccentricity">
+<code class="descclassname">mtpy.analysis.geometry.</code><code class="descname">eccentricity</code><span class="sig-paren">(</span><em>z_array=None</em>, <em>z_object=None</em>, <em>pt_array=None</em>, <em>pt_object=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/geometry.html#eccentricity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.geometry.eccentricity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate eccentricy of a given impedance or phase tensor object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>**z_array**</strong> (<em>np.ndarray(nf, 2, 2)</em>) &#8211; numpy array of impedance elements
+<em>default</em> is None</li>
+<li><strong>**z_object**</strong> (<a class="reference internal" href="core.html#mtpy.core.z.Z" title="mtpy.core.z.Z"><em>mtpy.core.z.Z</em></a>) &#8211; z_object
+<em>default</em> is None</li>
+<li><strong>**pt_array**</strong> (<em>np.ndarray(nf, 2, 2)</em>) &#8211; numpy array of phase tensor elements
+<em>default</em> is None</li>
+<li><strong>**pt_object**</strong> (<em>mtpy.analysis.pt.PT</em>) &#8211; phase tensor object
+<em>default</em> is None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>**eccentricity**</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><p>np.ndarray(nf)</p>
+<p><strong>eccentricity_err</strong> : np.ndarray(nf)</p>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Estimate Dimesions:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.analysis.geometry</span> <span class="k">as</span> <span class="nn">geometry</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ec</span><span class="p">,</span> <span class="n">ec_err</span><span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">eccentricity</span><span class="p">(</span><span class="n">z_object</span><span class="o">=</span><span class="n">z_obj</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mtpy.analysis.geometry.strike_angle">
+<code class="descclassname">mtpy.analysis.geometry.</code><code class="descname">strike_angle</code><span class="sig-paren">(</span><em>z_array=None</em>, <em>z_object=None</em>, <em>pt_array=None</em>, <em>pt_object=None</em>, <em>skew_threshold=5</em>, <em>eccentricity_threshold=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/geometry.html#strike_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.geometry.strike_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate strike angle from 2D parts of the impedance tensor given the
+skew and eccentricity thresholds</p>
+<blockquote>
+<div>Arguments</div></blockquote>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>z_array</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray(nf, 2, 2)</span><dd>numpy array of impedance elements
+<em>default</em> is None</dd>
+<dt><strong>z_object</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">mtpy.core.z.Z</span><dd>z_object
+<em>default</em> is None</dd>
+<dt><strong>pt_array</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray(nf, 2, 2)</span><dd>numpy array of phase tensor elements
+<em>default</em> is None</dd>
+<dt><strong>pt_object</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">mtpy.analysis.pt.PT</span><dd>phase tensor object
+<em>default</em> is None</dd>
+<dt><strong>skew_threshold</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">float</span><dd>threshold on the skew angle in degrees, anything
+above this value is 3-D or azimuthally anisotropic
+<em>default</em> is 5 degrees</dd>
+<dt><strong>eccentricity_threshold</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">float</span><dd>threshold on eccentricty in dimensionaless
+units, anything below this value is 1-D
+<em>default</em> is 0.1</dd>
+</dl>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>**strike**</strong> &#8211; an array of strike angles in degrees for each frequency
+assuming 0 is north, and e is 90.  There is a 90
+degree ambiguity in the angle.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray(nf)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Estimate Dimesions:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.analysis.geometry</span> <span class="k">as</span> <span class="nn">geometry</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strike</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">strike_angle</span><span class="p">(</span><span class="n">z_object</span><span class="o">=</span><span class="n">z_obj</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                               <span class="n">skew_threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mtpy.analysis.pt">
+<span id="module-phase-tensor"></span><h2><strong>Module Phase Tensor</strong><a class="headerlink" href="#module-mtpy.analysis.pt" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="phase-tensor">
+<h3>Phase Tensor<a class="headerlink" href="#phase-tensor" title="Permalink to this headline">¶</a></h3>
+<p>Following Caldwell et al, 2004</p>
+<p>Residual Phase Tensor following Heise et al., [2008]</p>
+<p>&#64;UofA, 2013
+(LK)</p>
+<dl class="class">
+<dt id="mtpy.analysis.pt.PhaseTensor">
+<em class="property">class </em><code class="descclassname">mtpy.analysis.pt.</code><code class="descname">PhaseTensor</code><span class="sig-paren">(</span><em>pt_array=None</em>, <em>pterr_array=None</em>, <em>z_array=None</em>, <em>z_err_array=None</em>, <em>z_object=None</em>, <em>freq=None</em>, <em>pt_rot=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#PhaseTensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>PhaseTensor class - generates a Phase Tensor (PT) object.</p>
+<p>Methods  include reading and writing from and to edi-objects, rotations
+combinations of Z instances, as well as
+calculation of invariants, inverse, amplitude/phase,...</p>
+<p>PT is a complex array of the form (n_freq, 2, 2),
+with indices in the following order:</p>
+<blockquote>
+<div>PTxx: (0,0) - PTxy: (0,1) - PTyx: (1,0) - PTyy: (1,1)</div></blockquote>
+<dl class="docutils">
+<dt>All internal methods are based on (Caldwell et al.,2004) and</dt>
+<dd>(Bibby et al.,2005), in which they use the canonical cartesian 2D</dd>
+</dl>
+<p>reference (x1, x2). However, all components, coordinates,
+and angles for in- and outputs are given in the geographical
+reference frame:</p>
+<blockquote>
+<div>x-axis = North ; y-axis = East (; z-axis = Down)</div></blockquote>
+<dl class="docutils">
+<dt>Therefore, all results from using those methods are consistent</dt>
+<dd>(angles are referenced from North rather than x1).</dd>
+</dl>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attributes</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>freq</td>
+<td>array of frequencies associated with elements of
+impedance tensor.</td>
+</tr>
+<tr class="row-odd"><td>pt</td>
+<td>phase tensor array</td>
+</tr>
+<tr class="row-even"><td>pterr</td>
+<td>phase tensor error</td>
+</tr>
+<tr class="row-odd"><td>z</td>
+<td>impedance tensor</td>
+</tr>
+<tr class="row-even"><td>z_err</td>
+<td>impedance error</td>
+</tr>
+<tr class="row-odd"><td>rotation_angle</td>
+<td>rotation angle in degrees</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="mtpy.analysis.pt.PhaseTensor.azimuth">
+<code class="descname">azimuth</code><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.azimuth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Azimuth angle (deg) related to geoelectric strike</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.analysis.pt.PhaseTensor.ellipticity">
+<code class="descname">ellipticity</code><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.ellipticity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ellipticity of phase tensor related to dimensionality</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.analysis.pt.PhaseTensor.freq">
+<code class="descname">freq</code><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>freq array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.analysis.pt.PhaseTensor.phimax">
+<code class="descname">phimax</code><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.phimax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum phase in degrees</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.analysis.pt.PhaseTensor.phimin">
+<code class="descname">phimin</code><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.phimin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum phase in degrees</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.analysis.pt.PhaseTensor.pt">
+<code class="descname">pt</code><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.pt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Phase tensor array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.analysis.pt.PhaseTensor.pterr">
+<code class="descname">pterr</code><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.pterr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Phase tensor error array, must be same shape as pt</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.analysis.pt.PhaseTensor.rotate">
+<code class="descname">rotate</code><span class="sig-paren">(</span><em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#PhaseTensor.rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate PT array. Change the rotation angles attribute respectively.</p>
+<dl class="docutils">
+<dt>Rotation angle must be given in degrees. All angles are referenced to</dt>
+<dd>geographic North, positive in clockwise direction.
+(Mathematically negative!)</dd>
+</dl>
+<p>In non-rotated state, X refs to North and Y to East direction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.analysis.pt.PhaseTensor.set_z_object">
+<code class="descname">set_z_object</code><span class="sig-paren">(</span><em>z_object</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#PhaseTensor.set_z_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.set_z_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in Z object and convert information into PhaseTensor object
+attributes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.analysis.pt.PhaseTensor.skew">
+<code class="descname">skew</code><a class="headerlink" href="#mtpy.analysis.pt.PhaseTensor.skew" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skew angle in degrees</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mtpy.analysis.pt.ResidualPhaseTensor">
+<em class="property">class </em><code class="descclassname">mtpy.analysis.pt.</code><code class="descname">ResidualPhaseTensor</code><span class="sig-paren">(</span><em>pt_object1=None</em>, <em>pt_object2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#ResidualPhaseTensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.ResidualPhaseTensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>PhaseTensor class - generates a Phase Tensor (PT) object DeltaPhi</p>
+<p>DeltaPhi = 1 - Phi1^-1*Phi2</p>
+<dl class="method">
+<dt id="mtpy.analysis.pt.ResidualPhaseTensor.compute_residual_pt">
+<code class="descname">compute_residual_pt</code><span class="sig-paren">(</span><em>pt_o1</em>, <em>pt_o2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#ResidualPhaseTensor.compute_residual_pt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.ResidualPhaseTensor.compute_residual_pt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in two instance of the MTpy PhaseTensor class.</p>
+<p>Update attributes:
+rpt, rpterr, _pt1, _pt2, _pt1err, _pt2err</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.analysis.pt.ResidualPhaseTensor.read_pts">
+<code class="descname">read_pts</code><span class="sig-paren">(</span><em>pt1</em>, <em>pt2</em>, <em>pt1err=None</em>, <em>pt2err=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#ResidualPhaseTensor.read_pts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.ResidualPhaseTensor.read_pts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read two PT arrays and calculate the ResPT array (incl. uncertainties).</p>
+<p>Input:
+- 2x PT array</p>
+<p>Optional:
+- 2x PTerror array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.analysis.pt.ResidualPhaseTensor.set_rpt">
+<code class="descname">set_rpt</code><span class="sig-paren">(</span><em>rpt_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#ResidualPhaseTensor.set_rpt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.ResidualPhaseTensor.set_rpt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the attribute &#8216;rpt&#8217; (ResidualPhaseTensor array).</p>
+<p>Input:
+ResPT array</p>
+<p>Test for shape, but no test for consistency!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.analysis.pt.ResidualPhaseTensor.set_rpterr">
+<code class="descname">set_rpterr</code><span class="sig-paren">(</span><em>rpterr_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#ResidualPhaseTensor.set_rpterr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.ResidualPhaseTensor.set_rpterr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the attribute &#8216;rpterr&#8217; (ResidualPhaseTensor-error array).</p>
+<p>Input:
+ResPT-error array</p>
+<p>Test for shape, but no test for consistency!</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="mtpy.analysis.pt.edi_file2pt">
+<code class="descclassname">mtpy.analysis.pt.</code><code class="descname">edi_file2pt</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#edi_file2pt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.edi_file2pt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Phase Tensor from Edi-file (incl. uncertainties)</p>
+<p>Input:
+- Edi-file : full path to the Edi-file</p>
+<p>Return:
+- PT object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mtpy.analysis.pt.z2pt">
+<code class="descclassname">mtpy.analysis.pt.</code><code class="descname">z2pt</code><span class="sig-paren">(</span><em>z_array</em>, <em>z_err_array=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#z2pt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.z2pt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Phase Tensor from Z array (incl. uncertainties)</p>
+<p>Input:
+- Z : 2x2 complex valued Numpy array</p>
+<p>Optional:
+- Z-error : 2x2 real valued Numpy array</p>
+<p>Return:
+- PT : 2x2 real valued Numpy array
+- PT-error : 2x2 real valued Numpy array</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mtpy.analysis.pt.z_object2pt">
+<code class="descclassname">mtpy.analysis.pt.</code><code class="descname">z_object2pt</code><span class="sig-paren">(</span><em>z_object</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/pt.html#z_object2pt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.pt.z_object2pt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Phase Tensor from Z object (incl. uncertainties)</p>
+<p>Input:
+- Z-object : instance of the MTpy Z class</p>
+<p>Return:
+- PT object</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-mtpy.analysis.staticshift">
+<span id="module-static-shift"></span><h2><strong>Module Static Shift</strong><a class="headerlink" href="#module-mtpy.analysis.staticshift" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="static-shift">
+<h3>Static Shift<a class="headerlink" href="#static-shift" title="Permalink to this headline">¶</a></h3>
+<p>module for estimating static shift</p>
+<p>Created on Mon Aug 19 10:06:21 2013</p>
+<p>&#64;author: jpeacock</p>
+<dl class="function">
+<dt id="mtpy.analysis.staticshift.estimate_static_spatial_median">
+<code class="descclassname">mtpy.analysis.staticshift.</code><code class="descname">estimate_static_spatial_median</code><span class="sig-paren">(</span><em>edi_fn</em>, <em>radius=1000.0</em>, <em>num_freq=20</em>, <em>freq_skip=4</em>, <em>shift_tol=0.15</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/staticshift.html#estimate_static_spatial_median"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.staticshift.estimate_static_spatial_median" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove static shift from a station using a spatial median filter.  This
+will look at all the edi files in the same directory as edi_fn and find
+those station within the given radius (meters).  Then it will find
+the medain static shift for the x and y modes and remove it, given that
+it is larger than the shift tolerance away from 1.  A new edi file will
+be written in a new folder called SS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>**edi_fn**</strong> (<em>string</em>) &#8211; full path to edi file to have static shift removed</li>
+<li><strong>**radius**</strong> (<em>float</em>) &#8211; radius to look for nearby stations, in meters.
+<em>default</em> is 1000 m</li>
+<li><strong>**num_freq**</strong> (<em>int</em>) &#8211; number of frequencies calculate the median static
+shift.  This is assuming the first frequency is the
+highest frequency.  Cause usually highest frequencies
+are sampling a 1D earth.  <em>default</em> is 20</li>
+<li><strong>**freq_skip**</strong> (<em>int</em>) &#8211; number of frequencies to skip from the highest
+frequency.  Sometimes the highest frequencies are
+not reliable due to noise or low signal in the AMT
+deadband.  This allows you to skip those frequencies.
+<em>default</em> is 4</li>
+<li><strong>**shift_tol**</strong> (<em>float</em>) &#8211; Tolerance on the median static shift correction.  If
+the data is noisy the correction factor can be biased
+away from 1.  Therefore the shift_tol is used to stop
+that bias.  If 1-tol &lt; correction &lt; 1+tol then the
+correction factor is set to 1.  <em>default</em> is 0.15</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>**shift_corrections**</strong> &#8211; static shift corrections for x and y modes</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float, float)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mtpy.analysis.staticshift.remove_static_shift_spatial_filter">
+<code class="descclassname">mtpy.analysis.staticshift.</code><code class="descname">remove_static_shift_spatial_filter</code><span class="sig-paren">(</span><em>edi_fn</em>, <em>radius=1000</em>, <em>num_freq=20</em>, <em>freq_skip=4</em>, <em>shift_tol=0.15</em>, <em>plot=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/staticshift.html#remove_static_shift_spatial_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.staticshift.remove_static_shift_spatial_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove static shift from a station using a spatial median filter.  This
+will look at all the edi files in the same directory as edi_fn and find
+those station within the given radius (meters).  Then it will find
+the medain static shift for the x and y modes and remove it, given that
+it is larger than the shift tolerance away from 1.  A new edi file will
+be written in a new folder called SS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>**edi_fn**</strong> (<em>string</em>) &#8211; full path to edi file to have static shift removed</li>
+<li><strong>**radius**</strong> (<em>float</em>) &#8211; radius to look for nearby stations, in meters.
+<em>default</em> is 1000 m</li>
+<li><strong>**num_freq**</strong> (<em>int</em>) &#8211; number of frequencies calculate the median static
+shift.  This is assuming the first frequency is the
+highest frequency.  Cause usually highest frequencies
+are sampling a 1D earth.  <em>default</em> is 20</li>
+<li><strong>**freq_skip**</strong> (<em>int</em>) &#8211; number of frequencies to skip from the highest
+frequency.  Sometimes the highest frequencies are
+not reliable due to noise or low signal in the AMT
+deadband.  This allows you to skip those frequencies.
+<em>default</em> is 4</li>
+<li><strong>**shift_tol**</strong> (<em>float</em>) &#8211; Tolerance on the median static shift correction.  If
+the data is noisy the correction factor can be biased
+away from 1.  Therefore the shift_tol is used to stop
+that bias.  If 1-tol &lt; correction &lt; 1+tol then the
+correction factor is set to 1.  <em>default</em> is 0.15</li>
+<li><strong>**plot**</strong> (<em>[ True | False ]</em>) &#8211; Boolean to plot the corrected response against the
+non-corrected response.  <em>default</em> is False</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>**new_edi_fn_ss**</strong> (<em>string</em>) &#8211; new path to the edi file with static shift removed</li>
+<li><strong>**shift_corrections**</strong> (<em>(float, float)</em>) &#8211; static shift corrections for x and y modes</li>
+<li><strong>**plot_obj**</strong> (<em>mtplot.plot_multiple_mt_responses object</em>) &#8211; If plot is True a plot_obj is returned
+If plot is False None is returned</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-mtpy.analysis.zinvariants">
+<span id="module-z-invariants"></span><h2><strong>Module Z Invariants</strong><a class="headerlink" href="#module-mtpy.analysis.zinvariants" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed May 08 09:40:42 2013</p>
+<p>Interpreted from matlab code written by Stephan Thiel 2005</p>
+<p>&#64;author: jpeacock</p>
+<dl class="class">
+<dt id="mtpy.analysis.zinvariants.Zinvariants">
+<em class="property">class </em><code class="descclassname">mtpy.analysis.zinvariants.</code><code class="descname">Zinvariants</code><span class="sig-paren">(</span><em>z_object=None</em>, <em>z_array=None</em>, <em>z_err_array=None</em>, <em>freq=None</em>, <em>rot_z=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/zinvariants.html#Zinvariants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.zinvariants.Zinvariants" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates invariants from Weaver et al. [2000, 2003].  At the moment it
+does not calculate the error for each invariant, only the strike.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>**z_object**</strong> (<em>type mtpy.core.z</em>) &#8211; <dl class="docutils">
+<dt>needs to have attributes:</dt>
+<dd><a href="#id1"><span class="problematic" id="id2">*</span></a>z &#8211;&gt; np.array((nf, 2, 2), dtype=&#8217;complex&#8217;)<p><a href="#id3"><span class="problematic" id="id4">*</span></a>z_err &#8211;&gt; np.array((nf, 2, 2), dtype=&#8217;real&#8217;)</p>
+<p class="last"><a href="#id5"><span class="problematic" id="id6">*</span></a>freq &#8211;&gt; np.array(nf)</p>
+</dd>
+</dl>
+</li>
+<li><strong>**z**</strong> (<em>complex np.array(nf,2,2)</em>) &#8211; impedance tensor array</li>
+<li><strong>**z_err**</strong> (<em>real np.array(nf,2,2)</em>) &#8211; impedance tensor error array</li>
+<li><strong>**freq**</strong> (<em>np.array(nf)</em>) &#8211; array of freq cooresponding to the impedance
+tensor elements.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descname">**inv1**</code></dt>
+<dd><p><em>real off diaganol part normalizing factor</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">**inv2**</code></dt>
+<dd><p><em>imaginary off diaganol normalizing factor</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">**inv3**</code></dt>
+<dd><p><em>real anisotropy factor (range from [0,1])</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">**inv4**</code></dt>
+<dd><p><em>imaginary anisotropy factor (range from [0,1])</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">**inv5**</code></dt>
+<dd><p><em>suggests electric field twist</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">**inv6**</code></dt>
+<dd><p><em>suggests in phase small scale distortion</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">**inv7**</code></dt>
+<dd><p><em>suggests 3D structure</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">**strike**</code></dt>
+<dd><p><em>strike angle (deg) assuming positive clockwise 0=N</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">**strike_err**</code></dt>
+<dd><p><em>strike angle error (deg)</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">**q**</code></dt>
+<dd><p><em>dependent variable suggesting dimensionality</em></p>
+</dd></dl>
+
+<blockquote>
+<div><dl class="docutils">
+<dt>Weaver, J. T., Agarwal, A. K., Lilley, F. E. M., 2000,</dt>
+<dd>Characterization of the magnetotelluric tensor in terms of its
+invariants, Geophysical Journal International, 141, 321&#8211;336.</dd>
+<dt>Weaver, J. T., Agarwal, A. K., Lilley, F. E. M., 2003,</dt>
+<dd>The relationship between the magnetotelluric tensor invariants and
+the phase tensor of Caldwell, Bibby and Brown,
+presented at 3D Electromagnetics III, ASEG, paper 43.</dd>
+<dt>Lilley, F. E. M, 1998, Magnetotelluric tenosr dcomposition: 1: Theory</dt>
+<dd>for a basic procedure, Geophysics, 63, 1885&#8211;1897.</dd>
+<dt>Lilley, F. E. M, 1998, Magnetotelluric tenosr dcomposition: 2: Examples</dt>
+<dd>of a basic procedure, Geophysics, 63, 1898&#8211;1907.</dd>
+<dt>Szarka, L. and Menvielle, M., 1997, Analysis of rotational invariants</dt>
+<dd>of the magnetotelluric impedance tensor, Geophysical Journal
+International, 129, 133&#8211;142.</dd>
+</dl>
+</div></blockquote>
+<dl class="method">
+<dt id="mtpy.analysis.zinvariants.Zinvariants.compute_invariants">
+<code class="descname">compute_invariants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/zinvariants.html#Zinvariants.compute_invariants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.zinvariants.Zinvariants.compute_invariants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the invariants according to Weaver et al., [2000, 2003]</p>
+<p>Mostly used to plot Mohr&#8217;s circles</p>
+<p>In a 1D case: rho = mu (inv1**2+inv2**2)/w &amp; phi = arctan(inv2/inv1)</p>
+<dl class="docutils">
+<dt>Sets the invariants as attributes:</dt>
+<dd><p class="first"><strong>inv1</strong>       : real off diaganol part normalizing factor</p>
+<p><strong>inv2</strong>       : imaginary off diaganol normalizing factor</p>
+<p><strong>inv3</strong>       : real anisotropy factor (range from [0,1])</p>
+<p><strong>inv4</strong>       : imaginary anisotropy factor (range from [0,1])</p>
+<p><strong>inv5</strong>       : suggests electric field twist</p>
+<p><strong>inv6</strong>       : suggests in phase small scale distortion</p>
+<p><strong>inv7</strong>       : suggests 3D structure</p>
+<p><strong>strike</strong>     : strike angle (deg) assuming positive clockwise 0=N</p>
+<p><strong>strike_err</strong> : strike angle error (deg)</p>
+<p class="last"><strong>q</strong>          : dependent variable suggesting dimensionality</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.analysis.zinvariants.Zinvariants.rotate">
+<code class="descname">rotate</code><span class="sig-paren">(</span><em>rot_z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/zinvariants.html#Zinvariants.rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.zinvariants.Zinvariants.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotates the impedance tensor by the angle rot_z clockwise positive
+assuming 0 is North</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.analysis.zinvariants.Zinvariants.set_freq">
+<code class="descname">set_freq</code><span class="sig-paren">(</span><em>freq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/zinvariants.html#Zinvariants.set_freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.zinvariants.Zinvariants.set_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the freq array, needs to be the same length at z</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.analysis.zinvariants.Zinvariants.set_z">
+<code class="descname">set_z</code><span class="sig-paren">(</span><em>z_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/zinvariants.html#Zinvariants.set_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.zinvariants.Zinvariants.set_z" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the z array.</p>
+<p>If the shape changes or the freq are changed need to input
+those as well.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.analysis.zinvariants.Zinvariants.set_z_err">
+<code class="descname">set_z_err</code><span class="sig-paren">(</span><em>z_err_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/analysis/zinvariants.html#Zinvariants.set_z_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.analysis.zinvariants.Zinvariants.set_z_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the z_err array.</p>
+<p>If the shape changes or the freq are changed need to input
+those as well.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="master_index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Analysis</a><ul>
+<li><a class="reference internal" href="#module-mtpy.analysis.distortion"><strong>Module Distortion</strong></a></li>
+<li><a class="reference internal" href="#module-mtpy.analysis.geometry"><strong>Module Geometry</strong></a></li>
+<li><a class="reference internal" href="#module-mtpy.analysis.pt"><strong>Module Phase Tensor</strong></a><ul>
+<li><a class="reference internal" href="#phase-tensor">Phase Tensor</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-mtpy.analysis.staticshift"><strong>Module Static Shift</strong></a><ul>
+<li><a class="reference internal" href="#static-shift">Static Shift</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-mtpy.analysis.zinvariants"><strong>Module Z Invariants</strong></a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.html"
+                        title="previous chapter">Core:</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modeling.html"
+                        title="next chapter">Modeling</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/analysis.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modeling.html" title="Modeling"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Core:"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="master_index.html">MTpy 0.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, J. Peacock, L. Krieger.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>

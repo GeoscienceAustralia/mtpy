@@ -1,0 +1,2262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Core: &#8212; MTpy 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MTpy 0.2 documentation" href="master_index.html" />
+    <link rel="next" title="Analysis" href="analysis.html" />
+    <link rel="prev" title="Welcome to MTpy’s documentation!" href="master_index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="analysis.html" title="Analysis"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="master_index.html" title="Welcome to MTpy’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="master_index.html">MTpy 0.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="core">
+<h1>Core:<a class="headerlink" href="#core" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-mtpy.core.z">
+<span id="module-z"></span><h2><strong>Module z</strong><a class="headerlink" href="#module-mtpy.core.z" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="z-module">
+<h3>z module<a class="headerlink" href="#z-module" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="classes">
+<h4>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ul class="simple">
+<li>Z &#8211;&gt; deals with impedance tesnsor.</li>
+<li>Tipper &#8211;&gt; deals with Tipper matrix.</li>
+</ul>
+</div></blockquote>
+<p>LK, JP 2013</p>
+</div>
+</div>
+<div class="section" id="class-z">
+<h3><strong>Class Z</strong><a class="headerlink" href="#class-z" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="mtpy.core.z.Z">
+<em class="property">class </em><code class="descclassname">mtpy.core.z.</code><code class="descname">Z</code><span class="sig-paren">(</span><em>z_array=None</em>, <em>z_err_array=None</em>, <em>freq=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/z.html#Z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.z.Z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Z class - generates an impedance tensor (Z) object.</p>
+<p>Z is a complex array of the form (n_freq, 2, 2),
+with indices in the following order:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Zxx: (0,0)</li>
+<li>Zxy: (0,1)</li>
+<li>Zyx: (1,0)</li>
+<li>Zyy: (1,1)</li>
+</ul>
+</div></blockquote>
+<p>All errors are given as standard deviations (sqrt(VAR))</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>**z_array**</strong> (<em>numpy.ndarray(n_freq, 2, 2)</em>) &#8211; array containing complex impedance values</li>
+<li><strong>**z_err_array**</strong> (<em>numpy.ndarray(n_freq, 2, 2)</em>) &#8211; array containing error values (standard deviation)
+of impedance tensor elements</li>
+<li><strong>**freq**</strong> (<em>np.ndarray(n_freq)</em>) &#8211; array of frequency values corresponding to impedance tensor
+elements.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attributes</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>freq</td>
+<td>array of frequencies corresponding to elements of z</td>
+</tr>
+<tr class="row-odd"><td>rotation_angle</td>
+<td>angle of which data is rotated by</td>
+</tr>
+<tr class="row-even"><td>z</td>
+<td>impedance tensor</td>
+</tr>
+<tr class="row-odd"><td>z_err</td>
+<td>estimated errors of impedance tensor</td>
+</tr>
+<tr class="row-even"><td>resistivity</td>
+<td>apparent resisitivity estimated from z in Ohm-m</td>
+</tr>
+<tr class="row-odd"><td>resistivity_err</td>
+<td>apparent resisitivity error</td>
+</tr>
+<tr class="row-even"><td>phase</td>
+<td>impedance phase (deg)</td>
+</tr>
+<tr class="row-odd"><td>phase_err</td>
+<td>error in impedance phase</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Methods</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>det</td>
+<td>calculates determinant of z with errors</td>
+</tr>
+<tr class="row-odd"><td>invariants</td>
+<td>calculates the invariants of z</td>
+</tr>
+<tr class="row-even"><td>inverse</td>
+<td>calculates the inverse of z</td>
+</tr>
+<tr class="row-odd"><td>remove_distortion</td>
+<td>removes distortion given a distortion matrix</td>
+</tr>
+<tr class="row-even"><td>remove_ss</td>
+<td>removes static shift by assumin Z = S * Z_0</td>
+</tr>
+<tr class="row-odd"><td>norm</td>
+<td>calculates the norm of Z</td>
+</tr>
+<tr class="row-even"><td>only1d</td>
+<td>zeros diagonal components and computes
+the absolute valued mean of the off-diagonal
+components.</td>
+</tr>
+<tr class="row-odd"><td>only2d</td>
+<td>zeros diagonal components</td>
+</tr>
+<tr class="row-even"><td>res_phase</td>
+<td>computes resistivity and phase</td>
+</tr>
+<tr class="row-odd"><td>rotate</td>
+<td>rotates z positive clockwise, angle assumes
+North is 0.</td>
+</tr>
+<tr class="row-even"><td>set_res_phase</td>
+<td>recalculates z and z_err, needs attribute freq</td>
+</tr>
+<tr class="row-odd"><td>skew</td>
+<td>calculates the invariant skew (off diagonal trace)</td>
+</tr>
+<tr class="row-even"><td>trace</td>
+<td>calculates the trace of z</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.z</span> <span class="k">as</span> <span class="nn">mtz</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="o">+</span><span class="mi">0</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="o">+</span><span class="mi">0</span><span class="n">j</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z_object</span> <span class="o">=</span> <span class="n">mtz</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="n">z_array</span><span class="o">=</span><span class="n">z_test</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z_object</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z_object</span><span class="o">.</span><span class="n">resistivity</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.det">
+<code class="descname">det</code><a class="headerlink" href="#mtpy.core.z.Z.det" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determinant of Z, incl. error</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.freq">
+<code class="descname">freq</code><a class="headerlink" href="#mtpy.core.z.Z.freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>array of frequencies in Hz</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.invariants">
+<code class="descname">invariants</code><a class="headerlink" href="#mtpy.core.z.Z.invariants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary, containing the invariants of
+Z: z1, det, det_real, det_imag, trace,
+skew, norm, lambda_plus/minus,
+sigma_plus/minus</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.inverse">
+<code class="descname">inverse</code><a class="headerlink" href="#mtpy.core.z.Z.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse of Z</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.norm">
+<code class="descname">norm</code><a class="headerlink" href="#mtpy.core.z.Z.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Norm of Z, incl. error</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.only1d">
+<code class="descname">only1d</code><a class="headerlink" href="#mtpy.core.z.Z.only1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Z in 1D form. If Z is not 1D per se,
+the diagonal elements are set to zero, the
+off-diagonal elements keep their signs, but
+their absolute is set to the mean of the
+original Z off-diagonal absolutes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.only2d">
+<code class="descname">only2d</code><a class="headerlink" href="#mtpy.core.z.Z.only2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Z in 2D form. If Z is not 2D per se,
+the diagonal elements are set to zero.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.phase">
+<code class="descname">phase</code><a class="headerlink" href="#mtpy.core.z.Z.phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Phase array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.phase_err">
+<code class="descname">phase_err</code><a class="headerlink" href="#mtpy.core.z.Z.phase_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Phase error array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.z.Z.remove_distortion">
+<code class="descname">remove_distortion</code><span class="sig-paren">(</span><em>distortion_tensor</em>, <em>distortion_err_tensor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/z.html#Z.remove_distortion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.z.Z.remove_distortion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove distortion D form an observed impedance tensor Z to obtain
+the uperturbed &#8220;correct&#8221; Z0:
+Z = D * Z0</p>
+<p>Propagation of errors/uncertainties included</p>
+<blockquote>
+<div><blockquote>
+<div><dl class="docutils">
+<dt><strong>distortion_tensor</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray(2, 2, dtype=real)</span><dd>real distortion tensor as a 2x2</dd>
+<dt><strong>distortion_err_tensor</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray(2, 2, dtype=real),</span><dd>default is None</dd>
+</dl>
+</div></blockquote>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>distortion_tensor</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray(2, 2, dtype=&#8217;real&#8217;)</span><dd>input distortion tensor</dd>
+<dt><strong>z_corrected</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray(num_freq, 2, 2, dtype=&#8217;complex&#8217;)</span><dd>impedance tensor with distorion removed</dd>
+<dt><strong>z_corrected_err</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray(num_freq, 2, 2, dtype=&#8217;complex&#8217;)</span><dd>impedance tensor error after distortion is removed</dd>
+</dl>
+</div></blockquote>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.z</span> <span class="k">as</span> <span class="nn">mtz</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">distortion</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.2</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">],[</span><span class="o">.</span><span class="mi">35</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">,</span> <span class="n">new_z</span><span class="p">,</span> <span class="n">new_z_err</span> <span class="o">=</span> <span class="n">z_obj</span><span class="o">.</span><span class="n">remove_distortion</span><span class="p">(</span><span class="n">distortion</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.z.Z.remove_ss">
+<code class="descname">remove_ss</code><span class="sig-paren">(</span><em>reduce_res_factor_x=1.0</em>, <em>reduce_res_factor_y=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/z.html#Z.remove_ss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.z.Z.remove_ss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the static shift by providing the respective correction factors
+for the resistivity in the x and y components.
+(Factors can be determined by using the &#8220;Analysis&#8221; module for the
+impedance tensor)</p>
+<p>Assume the original observed tensor Z is built by a static shift S
+and an unperturbated &#8220;correct&#8221; Z0 :</p>
+<blockquote>
+<div><ul class="simple">
+<li>Z = S * Z0</li>
+</ul>
+</div></blockquote>
+<dl class="docutils">
+<dt>therefore the correct Z will be :</dt>
+<dd><ul class="first last simple">
+<li>Z0 = S^(-1) * Z</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>**reduce_res_factor_x**</strong> (<em>float or iterable list or array</em>) &#8211; static shift factor to be applied to x
+components (ie z[:, 0, 1]).  This is
+assumed to be in resistivity scale</li>
+<li><strong>**reduce_res_factor_y**</strong> (<em>float or iterable list or array</em>) &#8211; static shift factor to be applied to y
+components (ie z[:, 1, 0]).  This is
+assumed to be in resistivity scale</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns</dt>
+<dd><blockquote class="first">
+<div></div></blockquote>
+<dl class="docutils">
+<dt><strong>S</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray ((2, 2))</span><dd>static shift matrix,</dd>
+</dl>
+<p class="last"><strong>Z0</strong>: corrected Z   (over all freq)</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The factors are in resistivity scale, so the
+entries of  the matrix &#8220;S&#8221; need to be given by their
+square-roots!</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.resistivity">
+<code class="descname">resistivity</code><a class="headerlink" href="#mtpy.core.z.Z.resistivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resistivity array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.resistivity_err">
+<code class="descname">resistivity_err</code><a class="headerlink" href="#mtpy.core.z.Z.resistivity_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resistivity error array</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.z.Z.rotate">
+<code class="descname">rotate</code><span class="sig-paren">(</span><em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/z.html#Z.rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.z.Z.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate Z array by angle alpha.</p>
+<p>Rotation angle must be given in degrees. All angles are referenced
+to geographic North, positive in clockwise direction.
+(Mathematically negative!)</p>
+<p>In non-rotated state, X refs to North and Y to East direction.</p>
+<dl class="docutils">
+<dt>Updates the attributes</dt>
+<dd><ul class="first last simple">
+<li><em>z</em></li>
+<li><em>z_err</em></li>
+<li><em>zrot</em></li>
+<li><em>resistivity</em></li>
+<li><em>phase</em></li>
+<li><em>resistivity_err</em></li>
+<li><em>phase_err</em></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.z.Z.set_res_phase">
+<code class="descname">set_res_phase</code><span class="sig-paren">(</span><em>res_array</em>, <em>phase_array</em>, <em>reserr_array=None</em>, <em>phaseerr_array=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/z.html#Z.set_res_phase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.z.Z.set_res_phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set values for resistivity (res - in Ohm m) and phase
+(phase - in degrees), including error propagation.</p>
+<dl class="docutils">
+<dt>Updates the attributes</dt>
+<dd><ul class="first last simple">
+<li>z</li>
+<li>z_err</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.skew">
+<code class="descname">skew</code><a class="headerlink" href="#mtpy.core.z.Z.skew" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skew of Z, incl. error</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.trace">
+<code class="descname">trace</code><a class="headerlink" href="#mtpy.core.z.Z.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace of Z, incl. error</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.z">
+<code class="descname">z</code><a class="headerlink" href="#mtpy.core.z.Z.z" title="Permalink to this definition">¶</a></dt>
+<dd><p>impedance tensor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Z.z_err">
+<code class="descname">z_err</code><a class="headerlink" href="#mtpy.core.z.Z.z_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>impedance tensor error</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="class-tipper">
+<h3><strong>Class Tipper</strong><a class="headerlink" href="#class-tipper" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="mtpy.core.z.Tipper">
+<em class="property">class </em><code class="descclassname">mtpy.core.z.</code><code class="descname">Tipper</code><span class="sig-paren">(</span><em>tipper_array=None</em>, <em>tipper_err_array=None</em>, <em>freq=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/z.html#Tipper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.z.Tipper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tipper class &#8211;&gt; generates a Tipper-object.</p>
+<p>Errors are given as standard deviations (sqrt(VAR))</p>
+<dl class="docutils">
+<dt>Arguments</dt>
+<dd><dl class="first last docutils">
+<dt><strong>tipper_array</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray((nf, 1, 2), dtype=&#8217;complex&#8217;)</span><dd>tipper array in the shape of [Tx, Ty]
+<em>default</em> is None</dd>
+<dt><strong>tipper_err_array</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray((nf, 1, 2))</span><dd><dl class="first last docutils">
+<dt>array of estimated tipper errors</dt>
+<dd>in the shape of [Tx, Ty].
+Must be the same shape as tipper_array.
+<em>default</em> is None</dd>
+</dl>
+</dd>
+<dt><strong>freq</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">np.ndarray(nf)</span><dd>array of frequencies corresponding to the tipper elements.
+Must be same length as tipper_array.
+<em>default</em> is None</dd>
+</dl>
+</dd>
+</dl>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attributes</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>freq</td>
+<td>array of frequencies corresponding to elements of z</td>
+</tr>
+<tr class="row-odd"><td>rotation_angle</td>
+<td>angle of which data is rotated by</td>
+</tr>
+<tr class="row-even"><td>tipper</td>
+<td>tipper array</td>
+</tr>
+<tr class="row-odd"><td>tipper_err</td>
+<td>tipper error array</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Methods</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>mag_direction</td>
+<td>computes magnitude and direction of real and imaginary
+induction arrows.</td>
+</tr>
+<tr class="row-odd"><td>amp_phase</td>
+<td>computes amplitude and phase of Tx and Ty.</td>
+</tr>
+<tr class="row-even"><td>rotate</td>
+<td>rotates the data by the given angle</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="mtpy.core.z.Tipper.freq">
+<code class="descname">freq</code><a class="headerlink" href="#mtpy.core.z.Tipper.freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>array of freq</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.z.Tipper.rotate">
+<code class="descname">rotate</code><span class="sig-paren">(</span><em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/z.html#Tipper.rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.z.Tipper.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate  Tipper array.</p>
+<p>Rotation angle must be given in degrees. All angles are referenced
+to geographic North=0, positive in clockwise direction.
+(Mathematically negative!)</p>
+<p>In non-rotated state, &#8216;X&#8217; refs to North and &#8216;Y&#8217; to East direction.</p>
+<dl class="docutils">
+<dt>Updates the attributes</dt>
+<dd><ul class="first last simple">
+<li><em>tipper</em></li>
+<li><em>tipper_err</em></li>
+<li><em>rotation_angle</em></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.z.Tipper.set_amp_phase">
+<code class="descname">set_amp_phase</code><span class="sig-paren">(</span><em>r_array</em>, <em>phi_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/z.html#Tipper.set_amp_phase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.z.Tipper.set_amp_phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set values for amplitude(r) and argument (phi - in degrees).</p>
+<dl class="docutils">
+<dt>Updates the attributes</dt>
+<dd><ul class="first last simple">
+<li>tipper</li>
+<li>tipper_err</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.z.Tipper.set_mag_direction">
+<code class="descname">set_mag_direction</code><span class="sig-paren">(</span><em>mag_real</em>, <em>ang_real</em>, <em>mag_imag</em>, <em>ang_imag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/z.html#Tipper.set_mag_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.z.Tipper.set_mag_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the tipper from the magnitude and direction of the real
+and imaginary components.</p>
+<p>Updates tipper</p>
+<p>No error propagation yet</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Tipper.tipper">
+<code class="descname">tipper</code><a class="headerlink" href="#mtpy.core.z.Tipper.tipper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tipper array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.z.Tipper.tipper_err">
+<code class="descname">tipper_err</code><a class="headerlink" href="#mtpy.core.z.Tipper.tipper_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimated Tipper errors</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-edi">
+<h2><strong>Module edi</strong><a class="headerlink" href="#module-edi" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-mtpy.core.edi">
+<span id="class-edi"></span><h3><strong>Class Edi</strong><a class="headerlink" href="#module-mtpy.core.edi" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="edi-class">
+<h4>EDI Class<a class="headerlink" href="#edi-class" title="Permalink to this headline">¶</a></h4>
+<p>The Edi class can read and write an .edi file, the &#8216;standard format&#8217; of
+magnetotellurics.  Each section of the .edi file is given its own class,
+so the elements of each section are attributes for easy access.</p>
+<p>Created on Tue Dec 22 16:03:31 2015</p>
+<p>&#64;author: jpeacock</p>
+<dl class="class">
+<dt id="mtpy.core.edi.DataSection">
+<em class="property">class </em><code class="descclassname">mtpy.core.edi.</code><code class="descname">DataSection</code><span class="sig-paren">(</span><em>edi_fn=None</em>, <em>edi_lines=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#DataSection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.DataSection" title="Permalink to this definition">¶</a></dt>
+<dd><p>DataSection contains the small metadata block that describes which channel
+is which.  A typical block looks like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;=</span><span class="n">MTSECT</span>
+
+    <span class="n">ex</span><span class="o">=</span><span class="mf">1004.001</span>
+    <span class="n">ey</span><span class="o">=</span><span class="mf">1005.001</span>
+    <span class="n">hx</span><span class="o">=</span><span class="mf">1001.001</span>
+    <span class="n">hy</span><span class="o">=</span><span class="mf">1002.001</span>
+    <span class="n">hz</span><span class="o">=</span><span class="mf">1003.001</span>
+    <span class="n">nfreq</span><span class="o">=</span><span class="mi">14</span>
+    <span class="n">sectid</span><span class="o">=</span><span class="n">par28ew</span>
+    <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">maxblks</span><span class="o">=</span><span class="kc">None</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**edi_fn**</strong> (<em>string</em>) &#8211; full path to .edi file to read in.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descname">================= ==================================== ======== ===========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Attributes        Description                          Default  In .edi</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">================= ==================================== ======== ===========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">ex                ex channel id number                 None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">ey                ey channel id number                 None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">hx                hx channel id number                 None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">hy                hy channel id number                 None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">hz                hz channel id number                 None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">nfreq             number of frequencies                None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">sectid            section id, should be the same</code></dt>
+<dd><p>as the station name -&gt; Header.dataid None     yes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">maxblks           maximum number of data blocks        None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">nchan             number of channels                   None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">_kw_list          list of key words to put in metadata [1]_     no</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">================= ==================================== ======== ===========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. rubric</code></dt>
+<dd><p><em>: Footnotes</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. [1] Changes these values to change what is written to edi file</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.DataSection.get_data_sect">
+<code class="descname">get_data_sect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#DataSection.get_data_sect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.DataSection.get_data_sect" title="Permalink to this definition">¶</a></dt>
+<dd><p>read in the data of the file, will detect if reading spectra or
+impedance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.DataSection.read_data_sect">
+<code class="descname">read_data_sect</code><span class="sig-paren">(</span><em>data_sect_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#DataSection.read_data_sect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.DataSection.read_data_sect" title="Permalink to this definition">¶</a></dt>
+<dd><p>read data section</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.DataSection.write_data_sect">
+<code class="descname">write_data_sect</code><span class="sig-paren">(</span><em>data_sect_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#DataSection.write_data_sect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.DataSection.write_data_sect" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a data section</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mtpy.core.edi.DefineMeasurement">
+<em class="property">class </em><code class="descclassname">mtpy.core.edi.</code><code class="descname">DefineMeasurement</code><span class="sig-paren">(</span><em>edi_fn=None</em>, <em>edi_lines=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#DefineMeasurement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.DefineMeasurement" title="Permalink to this definition">¶</a></dt>
+<dd><p>DefineMeasurement class holds information about the measurement.  This
+includes how each channel was setup.  The main block contains information
+on the reference location for the station.  This is a bit of an archaic
+part and was meant for a multiple station .edi file.  This section is also
+important if you did any forward modeling with Winglink cause it only gives
+the station location in this section.  The other parts are how each channel
+was collected.  An example define measurement section looks like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;=</span><span class="n">DEFINEMEAS</span>
+
+    <span class="n">MAXCHAN</span><span class="o">=</span><span class="mi">7</span>
+    <span class="n">MAXRUN</span><span class="o">=</span><span class="mi">999</span>
+    <span class="n">MAXMEAS</span><span class="o">=</span><span class="mi">9999</span>
+    <span class="n">UNITS</span><span class="o">=</span><span class="n">M</span>
+    <span class="n">REFTYPE</span><span class="o">=</span><span class="n">CART</span>
+    <span class="n">REFLAT</span><span class="o">=-</span><span class="mi">30</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">49.4693</span>
+    <span class="n">REFLONG</span><span class="o">=</span><span class="mi">139</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mf">50.87</span>
+    <span class="n">REFELEV</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="o">&gt;</span><span class="n">HMEAS</span> <span class="n">ID</span><span class="o">=</span><span class="mf">1001.001</span> <span class="n">CHTYPE</span><span class="o">=</span><span class="n">HX</span> <span class="n">X</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Y</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Z</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">AZM</span><span class="o">=</span><span class="mf">0.0</span>
+<span class="o">&gt;</span><span class="n">HMEAS</span> <span class="n">ID</span><span class="o">=</span><span class="mf">1002.001</span> <span class="n">CHTYPE</span><span class="o">=</span><span class="n">HY</span> <span class="n">X</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Y</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Z</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">AZM</span><span class="o">=</span><span class="mf">90.0</span>
+<span class="o">&gt;</span><span class="n">HMEAS</span> <span class="n">ID</span><span class="o">=</span><span class="mf">1003.001</span> <span class="n">CHTYPE</span><span class="o">=</span><span class="n">HZ</span> <span class="n">X</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Y</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Z</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">AZM</span><span class="o">=</span><span class="mf">0.0</span>
+<span class="o">&gt;</span><span class="n">EMEAS</span> <span class="n">ID</span><span class="o">=</span><span class="mf">1004.001</span> <span class="n">CHTYPE</span><span class="o">=</span><span class="n">EX</span> <span class="n">X</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Y</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Z</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">X2</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Y2</span><span class="o">=</span><span class="mf">0.0</span>
+<span class="o">&gt;</span><span class="n">EMEAS</span> <span class="n">ID</span><span class="o">=</span><span class="mf">1005.001</span> <span class="n">CHTYPE</span><span class="o">=</span><span class="n">EY</span> <span class="n">X</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Y</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Z</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">X2</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Y2</span><span class="o">=</span><span class="mf">0.0</span>
+<span class="o">&gt;</span><span class="n">HMEAS</span> <span class="n">ID</span><span class="o">=</span><span class="mf">1006.001</span> <span class="n">CHTYPE</span><span class="o">=</span><span class="n">HX</span> <span class="n">X</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Y</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Z</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">AZM</span><span class="o">=</span><span class="mf">0.0</span>
+<span class="o">&gt;</span><span class="n">HMEAS</span> <span class="n">ID</span><span class="o">=</span><span class="mf">1007.001</span> <span class="n">CHTYPE</span><span class="o">=</span><span class="n">HY</span> <span class="n">X</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Y</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">Z</span><span class="o">=</span><span class="mf">0.0</span> <span class="n">AZM</span><span class="o">=</span><span class="mf">90.0</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**edi_fn**</strong> (<em>string</em>) &#8211; full path to .edi file to read in.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descname">================= ==================================== ======== ===========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Attributes        Description                          Default  In .edi</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">================= ==================================== ======== ===========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">edi_fn            Full path to edi file read in        None     no</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">maxchan           Maximum number of channels measured  None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">maxmeas           Maximum number of measurements       9999     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">maxrun            Maximum number of measurement runs   999      yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">meas_####         HMeasurement or EMEasurment object   None     yes</code></dt>
+<dd><p>defining the measurement made <a href="#id2"><span class="problematic" id="id3"><span id="id1"></span>[1]_</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">refelev           Reference elevation (m)              None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">reflat            Reference latitude [2]_              None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">refloc            Reference location                   None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">reflon            Reference longituted [2]_            None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">reftype           Reference coordinate system          'cart'   yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">units             Units of length                      m        yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">_define_meas_keys Keys to include in define_measurment [3]_     no</code></dt>
+<dd><p>section.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">================= ==================================== ======== ===========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. rubric</code></dt>
+<dd><p><em>: footnotes</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. [1] Each channel with have its own define measurement and depending on</code></dt>
+<dd><p>whether it is an E or H channel the metadata will be different.
+the #### correspond to the channel number.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. [2] Internally everything is converted to decimal degrees.  Output is</code></dt>
+<dd><p>written as HH:MM:SS.ss so Winglink can read them in.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. [3] If you want to change what metadata is written into the .edi file</code></dt>
+<dd><dl class="docutils">
+<dt>change the items in _header_keys.  Default attributes are:</dt>
+<dd><ul class="first last simple">
+<li>maxchan</li>
+<li>maxrun</li>
+<li>maxmeas</li>
+<li>reflat</li>
+<li>reflon</li>
+<li>refelev</li>
+<li>reftype</li>
+<li>units</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.DefineMeasurement.get_measurement_dict">
+<code class="descname">get_measurement_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#DefineMeasurement.get_measurement_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.DefineMeasurement.get_measurement_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a dictionary for the xmeas parts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.DefineMeasurement.get_measurement_lists">
+<code class="descname">get_measurement_lists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#DefineMeasurement.get_measurement_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.DefineMeasurement.get_measurement_lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>get measurement list including measurement setup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.DefineMeasurement.read_define_measurement">
+<code class="descname">read_define_measurement</code><span class="sig-paren">(</span><em>measurement_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#DefineMeasurement.read_define_measurement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.DefineMeasurement.read_define_measurement" title="Permalink to this definition">¶</a></dt>
+<dd><p>read the define measurment section of the edi file</p>
+<dl class="docutils">
+<dt>should be a list with lines for:</dt>
+<dd><ul class="first last">
+<li><p class="first">maxchan</p>
+</li>
+<li><p class="first">maxmeas</p>
+</li>
+<li><p class="first">maxrun</p>
+</li>
+<li><p class="first">refelev</p>
+</li>
+<li><p class="first">reflat</p>
+</li>
+<li><p class="first">reflon</p>
+</li>
+<li><p class="first">reftype</p>
+</li>
+<li><p class="first">units</p>
+</li>
+<li><dl class="first docutils">
+<dt>dictionaries for &gt;XMEAS with keys:</dt>
+<dd><ul class="first simple">
+<li>id</li>
+<li>chtype</li>
+<li>x</li>
+<li>y</li>
+<li>axm</li>
+</ul>
+<p class="last">-acqchn</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.DefineMeasurement.write_define_measurement">
+<code class="descname">write_define_measurement</code><span class="sig-paren">(</span><em>measurement_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#DefineMeasurement.write_define_measurement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.DefineMeasurement.write_define_measurement" title="Permalink to this definition">¶</a></dt>
+<dd><p>write the define measurement block as a list of strings</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mtpy.core.edi.EMeasurement">
+<em class="property">class </em><code class="descclassname">mtpy.core.edi.</code><code class="descname">EMeasurement</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#EMeasurement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.EMeasurement" title="Permalink to this definition">¶</a></dt>
+<dd><p>EMeasurement contains metadata for an electric field measurement</p>
+<dl class="attribute">
+<dt>
+<code class="descname">====================== ====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Attributes             Description</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">====================== ====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">id                     Channel number</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">chtype                 [ EX | EY ]</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">x                      x (m) north from reference point (station) of one</code></dt>
+<dd><p>electrode of the dipole</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">y                      y (m) east from reference point (station) of one</code></dt>
+<dd><p>electrode of the dipole</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">x2                     x (m) north from reference point (station) of the</code></dt>
+<dd><p>other electrode of the dipole</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">y2                     y (m) north from reference point (station) of the</code></dt>
+<dd><p>other electrode of the dipole</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">acqchan                name of the channel acquired usually same as chtype</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">====================== ====================================================</code></dt>
+<dd></dd></dl>
+
+<p class="rubric">Example</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Fill Metadata:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.edi</span> <span class="k">as</span> <span class="nn">mtedi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;chtype&#39;</span><span class="p">:</span><span class="s1">&#39;ex&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span> <span class="s1">&#39;y2&#39;</span><span class="p">:</span><span class="mi">50</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e_dict</span><span class="p">[</span><span class="s1">&#39;acqchn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ex&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">emeas</span> <span class="o">=</span> <span class="n">mtedi</span><span class="o">.</span><span class="n">EMeasurement</span><span class="p">(</span><span class="o">**</span><span class="n">e_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="mtpy.core.edi.Edi">
+<em class="property">class </em><code class="descclassname">mtpy.core.edi.</code><code class="descname">Edi</code><span class="sig-paren">(</span><em>edi_fn=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Edi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Edi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is for .edi files, mainly reading and writing.  Has been tested
+on Winglink and Phoenix output .edi&#8217;s, which are meant to follow the
+archaic EDI format put forward by SEG. Can read impedance, Tipper and/or
+spectra data.</p>
+<p>The Edi class contains a class for each major section of the .edi file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**edi_fn**</strong> (<em>string</em>) &#8211; full path to .edi file to be read in.
+<em>default</em> is None. If an .edi file is input, it is
+automatically read in and attributes of Edi are filled</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt>
+<code class="descname">===================== =====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">Methods               Description</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">===================== =====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">read_edi_file         Reads in an edi file and populates the associated</code></dt>
+<dd><p>classes and attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">write_edi_file        Writes an .edi file following the EDI format given</code></dt>
+<dd><p>the apporpriate attributes are filled.  Writes out
+in impedance and Tipper format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">_read_data            Reads in the impedance and Tipper blocks, if the</code></dt>
+<dd><p>.edi file is in &#8216;spectra&#8217; format, read_data converts
+the data to impedance and Tipper.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">_read_mt              Reads impedance and tipper data from the appropriate</code></dt>
+<dd><p>blocks of the .edi file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">_read_spectra         Reads in spectra data and converts it to impedance</code></dt>
+<dd><p>and Tipper data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">===================== =====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">===================== ========================================== ==========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Attributes            Description                                default</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">===================== ========================================== ==========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Data_sect             DataSection class, contains basic</code></dt>
+<dd><p>information on the data collected and in
+whether the data is in impedance or
+spectra.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Define_measurement    DefineMeasurement class, contains</code></dt>
+<dd><p>information on how the data was
+collected.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">edi_fn                full path to edi file read in              None</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Header                Header class, contains metadata on</code></dt>
+<dd><p>where, when, and who collected the data</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Info                  Information class, contains information</code></dt>
+<dd><p>on how the data was processed and how the
+transfer functions where estimated.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Tipper                mtpy.core.z.Tipper class, contains the</code></dt>
+<dd><p>tipper data</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Z                     mtpy.core.z.Z class, contains the</code></dt>
+<dd><p>impedance data</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">_block_len            number of data in one line.                6</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">_data_header_str      header string for each of the data         '!****{0}****!'</code></dt>
+<dd><p>section</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">_num_format           string format of data.                     ' 15.6e'</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">_t_labels             labels for tipper blocks</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">_z_labels             labels for impedance blocks</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">===================== ========================================== ==========</code></dt>
+<dd></dd></dl>
+
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Change Latitude:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.edi</span> <span class="k">as</span> <span class="nn">mtedi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edi_obj</span> <span class="o">=</span> <span class="n">mtedi</span><span class="o">.</span><span class="n">Edi</span><span class="p">(</span><span class="n">edi_fn</span><span class="o">=</span><span class="s2">r&quot;/home/mt/mt01.edi&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># change the latitude</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edi_obj</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">lat</span> <span class="o">=</span> <span class="mf">45.7869</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_edi_fn</span> <span class="o">=</span> <span class="n">edi_obj</span><span class="o">.</span><span class="n">write_edi_file</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="mtpy.core.edi.Edi.elev">
+<code class="descname">elev</code><a class="headerlink" href="#mtpy.core.edi.Edi.elev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Elevation in meters</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.edi.Edi.lat">
+<code class="descname">lat</code><a class="headerlink" href="#mtpy.core.edi.Edi.lat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Latitude in decimal degrees</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.edi.Edi.lon">
+<code class="descname">lon</code><a class="headerlink" href="#mtpy.core.edi.Edi.lon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Longitude in decimal degrees</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.Edi.read_edi_file">
+<code class="descname">read_edi_file</code><span class="sig-paren">(</span><em>edi_fn=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Edi.read_edi_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Edi.read_edi_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in an edi file and fill attributes of each section&#8217;s classes.
+Including:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Header</li>
+<li>Info</li>
+<li>Define_measurement</li>
+<li>Data_sect</li>
+<li>Z</li>
+<li>Tipper</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Automatically detects if data is in spectra format.  All
+data read in is converted to impedance and Tipper.</p>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**edi_fn**</strong> (<em>string</em>) &#8211; full path to .edi file to be read in
+<em>default</em> is None</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Read edi:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.Edi</span> <span class="k">as</span> <span class="nn">mtedi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edi_obj</span> <span class="o">=</span> <span class="n">mtedi</span><span class="o">.</span><span class="n">Edi</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edi_obj</span><span class="o">.</span><span class="n">read_edi_file</span><span class="p">(</span><span class="n">edi_fn</span><span class="o">=</span><span class="s2">r&quot;/home/mt/mt01.edi&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.edi.Edi.station">
+<code class="descname">station</code><a class="headerlink" href="#mtpy.core.edi.Edi.station" title="Permalink to this definition">¶</a></dt>
+<dd><p>station name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.Edi.write_edi_file">
+<code class="descname">write_edi_file</code><span class="sig-paren">(</span><em>new_edi_fn=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Edi.write_edi_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Edi.write_edi_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a new edi file from either an existing .edi file or from data
+input by the user into the attributes of Edi.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**new_edi_fn**</strong> (<em>string</em>) &#8211; full path to new edi file.
+<em>default</em> is None, which will write to the same
+file as the input .edi with as:
+r&#8221;/home/mt/mt01_1.edi&#8221;</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Write EDI file:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.edi</span> <span class="k">as</span> <span class="nn">mtedi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edi_obj</span> <span class="o">=</span> <span class="n">mtedi</span><span class="o">.</span><span class="n">Edi</span><span class="p">(</span><span class="n">edi_fn</span><span class="o">=</span><span class="s2">r&quot;/home/mt/mt01/edi&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edi_obj</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">dataid</span> <span class="o">=</span> <span class="s1">&#39;mt01_rr&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edi_obj</span><span class="o">.</span><span class="n">write_edi_file</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mtpy.core.edi.HMeasurement">
+<em class="property">class </em><code class="descclassname">mtpy.core.edi.</code><code class="descname">HMeasurement</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#HMeasurement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.HMeasurement" title="Permalink to this definition">¶</a></dt>
+<dd><p>HMeasurement contains metadata for a magnetic field measurement</p>
+<dl class="attribute">
+<dt>
+<code class="descname">====================== ====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Attributes             Description</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">====================== ====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">id                     Channel number</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">chtype                 [ HX | HY | HZ | RHX | RHY ]</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">x                      x (m) north from reference point (station)</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">y                      y (m) east from reference point (station)</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">azm                    angle of sensor relative to north = 0</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">acqchan                name of the channel acquired usually same as chtype</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">====================== ====================================================</code></dt>
+<dd></dd></dl>
+
+<p class="rubric">Example</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Fill Metadata:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.edi</span> <span class="k">as</span> <span class="nn">mtedi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;chtype&#39;</span><span class="p">:</span><span class="s1">&#39;hx&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;azm&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h_dict</span><span class="p">[</span><span class="s1">&#39;acqchn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;hx&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hmeas</span> <span class="o">=</span> <span class="n">mtedi</span><span class="o">.</span><span class="n">HMeasurement</span><span class="p">(</span><span class="o">**</span><span class="n">h_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="mtpy.core.edi.Header">
+<em class="property">class </em><code class="descclassname">mtpy.core.edi.</code><code class="descname">Header</code><span class="sig-paren">(</span><em>edi_fn=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Header class contains all the information in the header section of the .edi
+file. A typical header block looks like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">HEAD</span>
+
+    <span class="n">ACQBY</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">ACQDATE</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">DATAID</span><span class="o">=</span><span class="n">par28ew</span>
+    <span class="n">ELEV</span><span class="o">=</span><span class="mf">0.000</span>
+    <span class="n">EMPTY</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">+</span><span class="mi">32</span>
+    <span class="n">FILEBY</span><span class="o">=</span><span class="n">WG3DForward</span>
+    <span class="n">FILEDATE</span><span class="o">=</span><span class="mi">2016</span><span class="o">/</span><span class="mi">04</span><span class="o">/</span><span class="mi">11</span> <span class="mi">19</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mi">37</span> <span class="n">UTC</span>
+    <span class="n">LAT</span><span class="o">=-</span><span class="mi">30</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">49</span>
+    <span class="n">LOC</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">LON</span><span class="o">=</span><span class="mi">139</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">50</span>
+    <span class="n">PROGDATE</span><span class="o">=</span><span class="mi">2002</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">22</span>
+    <span class="n">PROGVERS</span><span class="o">=</span><span class="n">WINGLINK</span> <span class="n">EDI</span> <span class="mf">1.0</span><span class="o">.</span><span class="mi">22</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**edi_fn**</strong> (<em>string</em>) &#8211; full path to .edi file to be read in.
+<em>default</em> is None. If an .edi file is input, it is
+automatically read in and attributes of Header are filled</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descname">Many of the attributes are needed in the .edi file.  They are marked with</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">a yes for 'In .edi'</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">============== ======================================= ======== ===========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Attributes     Description                             Default  In .edi</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">============== ======================================= ======== ===========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">acqby          Acquired by                             None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">acqdate        Acquired date (YYYY-MM-DD)              None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">dataid         Station name, should be a string        None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">edi_fn         Full path to .edi file                  None     no</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">elev           Elevation of station (m)                None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">empty          Value for missing data                  1e32     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">fileby         File written by                         None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">filedate       Date the file is written (YYYY-MM-DD)   None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">header_list    List of header lines                    None     no</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">lat            Latitude of station [1]_                None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">loc            Location name where station was         None     yes</code></dt>
+<dd><p>collected</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">lon            Longitude of station [1]_               None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">phoenix_edi    [ True | False ] if phoenix .edi format False    no</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">progdate       Date of program version to write .edi   None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">progvers       Version of program writing .edi         None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">stdvers        Standard version                        None     yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">units          Units of distance                       m        yes</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">_header_keys   list of metadata input into .edi        [2]_</code></dt>
+<dd><p>header block.                                    no</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">============== ======================================= ======== ===========</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. rubric</code></dt>
+<dd><p><em>: footnotes</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. [1] Internally everything is converted to decimal degrees.  Output is</code></dt>
+<dd><p>written as HH:MM:SS.ss so Winglink can read them in.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. [2] If you want to change what metadata is written into the .edi file</code></dt>
+<dd><dl class="docutils">
+<dt>change the items in _header_keys.  Default attributes are:</dt>
+<dd><ul class="first last simple">
+<li>acqby</li>
+<li>acqdate</li>
+<li>dataid</li>
+<li>elev</li>
+<li>fileby</li>
+<li>lat</li>
+<li>loc</li>
+<li>lon</li>
+<li>filedate</li>
+<li>empty</li>
+<li>progdate</li>
+<li>progvers</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">====================== ====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">Methods                Description</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">====================== ====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">get_header_list        get header lines from edi file</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">read_header            read in header information from header_lines</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">write_header           write header lines, returns a list of lines to write</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">====================== ====================================================</code></dt>
+<dd></dd></dl>
+
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Read Header:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.edi</span> <span class="k">as</span> <span class="nn">mtedi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">header_obj</span> <span class="o">=</span> <span class="n">mtedi</span><span class="o">.</span><span class="n">Header</span><span class="p">(</span><span class="n">edi_fn</span><span class="o">=</span><span class="s2">r&quot;/home/mt/mt01.edi&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mtpy.core.edi.Header.get_header_list">
+<code class="descname">get_header_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Header.get_header_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Header.get_header_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the header information from the .edi file in the form of a list,
+where each item is a line in the header section.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.Header.read_header">
+<code class="descname">read_header</code><span class="sig-paren">(</span><em>header_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Header.read_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Header.read_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>read a header information from either edi file or a list of lines
+containing header information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**header_list**</strong> (<em>list</em>) &#8211; should be read from an .edi file or input as
+[&#8216;key_01=value_01&#8217;, &#8216;key_02=value_02&#8217;]</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Input header_list:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">h_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lat=36.7898&#39;</span><span class="p">,</span> <span class="s1">&#39;lon=120.73532&#39;</span><span class="p">,</span> <span class="s1">&#39;elev=120.0&#39;</span><span class="p">,</span> <span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span>          <span class="s1">&#39;dataid=mt01&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.edi</span> <span class="k">as</span> <span class="nn">mtedi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">header</span> <span class="o">=</span> <span class="n">mtedi</span><span class="o">.</span><span class="n">Header</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">header</span><span class="o">.</span><span class="n">read_header</span><span class="p">(</span><span class="n">h_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.Header.write_header">
+<code class="descname">write_header</code><span class="sig-paren">(</span><em>header_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Header.write_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Header.write_header" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Write header information to a list of lines.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>header_list</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list</span><dd>should be read from an .edi file or input as
+[&#8216;key_01=value_01&#8217;, &#8216;key_02=value_02&#8217;]</dd>
+</dl>
+</div></blockquote>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>header_lines</strong></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list</span><dd>list of lines containing header information
+will be of the form
+[&#8216;&gt;HEAD</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<dl class="docutils">
+<dt>&#8216;,</dt>
+<dd>&#8216;    key_01=value_01</dd>
+<dt>&#8216;]</dt>
+<dd>if None is input then reads from input .edi
+file or uses attribute information to write
+metadata.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mtpy.core.edi.Information">
+<em class="property">class </em><code class="descclassname">mtpy.core.edi.</code><code class="descname">Information</code><span class="sig-paren">(</span><em>edi_fn=None</em>, <em>edi_lines=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contain, read, and write info section of .edi file</p>
+<p>not much to really do here, but just keep it in the same format that it is
+read in as, except if it is in phoenix format then split the two paragraphs
+up so they are sequential.</p>
+<dl class="method">
+<dt id="mtpy.core.edi.Information.get_info_list">
+<code class="descname">get_info_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Information.get_info_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Information.get_info_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a list of lines from the info section</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.Information.read_info">
+<code class="descname">read_info</code><span class="sig-paren">(</span><em>info_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Information.read_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Information.read_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>read information section of the .edi file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.edi.Information.write_info">
+<code class="descname">write_info</code><span class="sig-paren">(</span><em>info_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/edi.html#Information.write_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.edi.Information.write_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>write out information</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="module-mt">
+<h2><strong>Module MT</strong><a class="headerlink" href="#module-mt" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-mtpy.core.mt">
+<span id="class-mt"></span><h3><strong>Class MT</strong><a class="headerlink" href="#module-mtpy.core.mt" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="mt">
+<h4>MT<a class="headerlink" href="#mt" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ul class="simple">
+<li>Basic MT-object containing the very basic and necessary information for a
+single MT station</li>
+</ul>
+</div></blockquote>
+<p>Created on Tue Jan 07 12:42:34 2014</p>
+<p>&#64;author: jpeacock-pr</p>
+<dl class="class">
+<dt id="mtpy.core.mt.MT">
+<em class="property">class </em><code class="descclassname">mtpy.core.mt.</code><code class="descname">MT</code><span class="sig-paren">(</span><em>fn=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/mt.html#MT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.mt.MT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic object containing all information necessary for a single MT station
+including</p>
+<dl class="attribute">
+<dt>
+<code class="descname">===================== =====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Attribute             Description</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">===================== =====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">name                  station name</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">lat                   station latitude in decimal degrees</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">lon                   station longitude in decimal degrees</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">elev                  station elevation in meters</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Z                     mtpy.core.z.Z object for impedance tensor</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">Tipper                mtpy.core.z.Tipper object for tipper</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">date                  date collected</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">east                  station location in UTM coordinates assuming WGS-84</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">north                 station location in UTM coordinates assuming WGS-84</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">utm_zone              zone of UTM coordinates assuming WGS-84</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">===================== =====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. note</code></dt>
+<dd><p><em>:</em> &#8211;</p>
+<ul>
+<li><p class="first">can change the utm grid by changing _utm_ellipsoid.  See
+mtpy.utils.latlongutmconversion for details on reference
+ellipsoids</p>
+</li>
+<li><p class="first">currently the information is assumed to come from an edi file
+but can be extended later to .j files or something else or can
+be input by hand</p>
+</li>
+<li><p class="first">if you set the coordinates east, north or utm_zone, be sure to
+run _get_ll() to recalculate the latitude and longitude.</p>
+</li>
+<li><dl class="first docutils">
+<dt>can input the following key words to fill values in Z and Tipper:</dt>
+<dd><ul class="first last simple">
+<li>z_object        &#8211;&gt; mtpy.core.z.Z object</li>
+<li>z_array         &#8211;&gt; np.ndarray(n_freq, 2, 2, dtype=&#8217;complex&#8217;)</li>
+<li>z_err_array      &#8211;&gt; np.ndarray(n_freq, 2, 2)</li>
+<li>freq            &#8211;&gt; np.ndarray(n_freq)</li>
+<li>resistivity     &#8211;&gt; np.ndarray(n_freq, 2, 2) (linear scale)</li>
+<li>resistivity_err &#8211;&gt; np.ndarray(n_freq, 2, 2)</li>
+<li>phase           &#8211;&gt; np.ndarray(n_freq, 2, 2)</li>
+<li>phase_err       &#8211;&gt; np.ndarray(n_freq, 2, 2)</li>
+<li>tipper_object   &#8211;&gt; mtpy.core.z.Tipper object</li>
+<li>tipper          &#8211;&gt; np.ndarray(n_freq, 1, 2, dtype=&#8217;complex&#8217;)</li>
+<li>tipper_err       &#8211;&gt; np.ndarray(n_freq, 1, 2)</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">===================== =====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">Methods               Description</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">===================== =====================================================</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">write_edi_file        write an edi_file from the MT data</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">remove_distortion     remove distortion from the data following</code></dt>
+<dd><p>Bibby et al. [2005]</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">remove_static_shift   Shifts apparent resistivity curves up or down</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">interpolate           interpolates the impedance tensor and induction</code></dt>
+<dd><p>vectors onto a specified frequency array.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">plot_mt_response      plots the MT response using mtpy.imaging.plotresponse</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">===================== =====================================================</code></dt>
+<dd></dd></dl>
+
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Read from an .edi File:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.mt</span> <span class="k">as</span> <span class="nn">mt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt_obj</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">MT</span><span class="p">(</span><span class="s2">r&quot;/home/edi_files/s01.edi&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Plot MT response:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><div class="first highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># plot all components of mt response and phase tensor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_obj</span> <span class="o">=</span> <span class="n">mt_obj</span><span class="o">.</span><span class="n">plot_mt_response</span><span class="p">(</span><span class="n">plot_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">plot_pt</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># plot the tipper as well</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_obj</span><span class="o">.</span><span class="n">plot_tipper</span> <span class="o">=</span> <span class="s1">&#39;yri&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_obj</span><span class="o">.</span><span class="n">redraw_plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Remove Distortion:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">D</span><span class="p">,</span> <span class="n">new_z</span> <span class="o">=</span> <span class="n">mt_obj</span><span class="o">.</span><span class="n">remove_distortion</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">.</span><span class="mi">9</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>       <span class="p">[</span><span class="mf">0.98</span><span class="p">,</span> <span class="o">.</span><span class="mi">43</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># write a new edi file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt_obj</span><span class="o">.</span><span class="n">write_edi_file</span><span class="p">(</span><span class="n">new_Z</span><span class="o">=</span><span class="n">new_z</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wrote</span> <span class="n">file</span> <span class="n">to</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">edi_files</span><span class="o">/</span><span class="n">s01_RW</span><span class="o">.</span><span class="n">edi</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Remove Static Shift:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><div class="first highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_z_obj</span> <span class="o">=</span> <span class="n">mt_obj</span><span class="o">.</span><span class="n">remove_static_shift</span><span class="p">(</span><span class="n">ss_x</span><span class="o">=.</span><span class="mi">78</span><span class="p">,</span> <span class="n">ss_y</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># write a new edi file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt_obj</span><span class="o">.</span><span class="n">write_edi_file</span><span class="p">(</span><span class="n">new_fn</span><span class="o">=</span><span class="s2">r&quot;/home/edi_files/s01_ss.edi&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                      <span class="n">new_Z</span><span class="o">=</span><span class="n">new_z</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wrote</span> <span class="n">file</span> <span class="n">to</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">edi_files</span><span class="o">/</span><span class="n">s01_ss</span><span class="o">.</span><span class="n">edi</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Interpolate:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_z_obj</span><span class="p">,</span> <span class="n">new_tipper_obj</span> <span class="o">=</span> <span class="n">mt_obj</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">new_freq</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt_obj</span><span class="o">.</span><span class="n">write_edi_file</span><span class="p">(</span><span class="n">new_Z</span><span class="o">=</span><span class="n">new_z_obj</span><span class="p">,</span> <span class="n">new_Tipper</span><span class="o">=</span><span class="n">new_tipper_obj</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wrote</span> <span class="n">file</span> <span class="n">to</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">edi_files</span><span class="o">/</span><span class="n">s01_RW</span><span class="o">.</span><span class="n">edi</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.Tipper">
+<code class="descname">Tipper</code><a class="headerlink" href="#mtpy.core.mt.MT.Tipper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tipper object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.Z">
+<code class="descname">Z</code><a class="headerlink" href="#mtpy.core.mt.MT.Z" title="Permalink to this definition">¶</a></dt>
+<dd><p>impedence tensor object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.east">
+<code class="descname">east</code><a class="headerlink" href="#mtpy.core.mt.MT.east" title="Permalink to this definition">¶</a></dt>
+<dd><p>easting in meters of station location on UTM grid</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.elev">
+<code class="descname">elev</code><a class="headerlink" href="#mtpy.core.mt.MT.elev" title="Permalink to this definition">¶</a></dt>
+<dd><p>elevation in meters</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.fn">
+<code class="descname">fn</code><a class="headerlink" href="#mtpy.core.mt.MT.fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>name of file containing MT info</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.mt.MT.interpolate">
+<code class="descname">interpolate</code><span class="sig-paren">(</span><em>new_freq_array</em>, <em>bounds_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/mt.html#MT.interpolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.mt.MT.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate the impedance tensor onto different frequencies</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*new_freq_array*</strong> (<em>np.ndarray</em>) &#8211; a 1-d array of frequencies to interpolate on
+to.  Must be with in the bounds of the existing
+frequency range, anything outside and an error
+will occur.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>*new_z_object*</strong> (<em>mtpy.core.z.Z object</em>) &#8211; a new impedance object with the corresponding
+frequencies and components.</li>
+<li><strong>*new_tipper_object*</strong> (<em>mtpy.core.z.Tipper object</em>) &#8211; a new tipper object with the corresponding
+frequencies and components.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Interpolate:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.mt</span> <span class="k">as</span> <span class="nn">mt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edi_fn</span> <span class="o">=</span> <span class="s2">r&quot;/home/edi_files/mt_01.edi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt_obj</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">MT</span><span class="p">(</span><span class="n">edi_fn</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># create a new frequency range to interpolate onto</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_z_object</span><span class="p">,</span> <span class="n">new_tipper_obj</span> <span class="o">=</span> <span class="n">mt_obj</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">new_freq</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt_obj</span><span class="o">.</span><span class="n">write_edi_file</span><span class="p">(</span><span class="n">new_fn</span><span class="o">=</span><span class="s2">r&quot;/home/edi_files/mt_01_interp.edi&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>                   <span class="n">new_Z</span><span class="o">=</span><span class="n">new_z_object</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>                   <span class="n">new_Tipper</span><span class="o">=</span><span class="n">new_tipper_object</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.lat">
+<code class="descname">lat</code><a class="headerlink" href="#mtpy.core.mt.MT.lat" title="Permalink to this definition">¶</a></dt>
+<dd><p>latitude of station in decimal degrees</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.lon">
+<code class="descname">lon</code><a class="headerlink" href="#mtpy.core.mt.MT.lon" title="Permalink to this definition">¶</a></dt>
+<dd><p>longitude of station in decimal degrees</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.north">
+<code class="descname">north</code><a class="headerlink" href="#mtpy.core.mt.MT.north" title="Permalink to this definition">¶</a></dt>
+<dd><p>northing in meters of station location on UTM grid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.mt.MT.plot_mt_response">
+<code class="descname">plot_mt_response</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/mt.html#MT.plot_mt_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.mt.MT.plot_mt_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a mtpy.imaging.plot_mt_response.PlotMTResponse object</p>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Plot Response:</th><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mt_obj</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">MT</span><span class="p">(</span><span class="n">edi_file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">plot_mt_response</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># if you need more infor on plot_mt_response</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">help</span><span class="p">(</span><span class="n">pr</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.mt.MT.remove_distortion">
+<code class="descname">remove_distortion</code><span class="sig-paren">(</span><em>num_freq=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/mt.html#MT.remove_distortion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.mt.MT.remove_distortion" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove distortion following Bibby et al. [2005].</p>
+<p class="rubric">Example</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Remove Distortion and Write New .edi:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.mt</span> <span class="k">as</span> <span class="nn">mt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt1</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">MT</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="s2">r&quot;/home/mt/edi_files/mt01.edi&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span><span class="p">,</span> <span class="n">new_z</span> <span class="o">=</span> <span class="n">mt1</span><span class="o">.</span><span class="n">remove_distortion</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt1</span><span class="o">.</span><span class="n">write_edi_file</span><span class="p">(</span><span class="n">new_fn</span><span class="o">=</span><span class="s2">r&quot;/home/mt/edi_files/mt01_dr.edi&quot;</span><span class="p">,</span>            <span class="o">&gt;&gt;&gt;</span>                    <span class="n">new_Z</span><span class="o">=</span><span class="n">new_z</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.mt.MT.remove_static_shift">
+<code class="descname">remove_static_shift</code><span class="sig-paren">(</span><em>ss_x=1.0</em>, <em>ss_y=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/mt.html#MT.remove_static_shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.mt.MT.remove_static_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove static shift from the apparent resistivity</p>
+<p>Assume the original observed tensor Z is built by a static shift S
+and an unperturbated &#8220;correct&#8221; Z0 :</p>
+<blockquote>
+<div><ul class="simple">
+<li>Z = S * Z0</li>
+</ul>
+</div></blockquote>
+<dl class="docutils">
+<dt>therefore the correct Z will be :</dt>
+<dd><ul class="first last simple">
+<li>Z0 = S^(-1) * Z</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*ss_x*</strong> (<em>float</em>) &#8211; correction factor for x component</li>
+<li><strong>*ss_y*</strong> (<em>float</em>) &#8211; correction factor for y component</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The factors are in resistivity scale, so the
+entries of  the matrix &#8220;S&#8221; need to be given by their
+square-roots!</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>*new_z*</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">new z array</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Remove Static Shift:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mtpy.core.mt</span> <span class="k">as</span> <span class="nn">mt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt_obj</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">MT</span><span class="p">(</span><span class="s2">r&quot;/home/mt/mt01.edi&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_z_obj</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">remove_static_shift</span><span class="p">(</span><span class="n">ss_x</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">ss_y</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mt_obj</span><span class="o">.</span><span class="n">write_edi_file</span><span class="p">(</span><span class="n">new_fn</span><span class="o">=</span><span class="s2">r&quot;/home/mt/mt01_ss.edi&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>                   <span class="n">new_Z</span><span class="o">=</span><span class="n">new_z_obj</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.rotation_angle">
+<code class="descname">rotation_angle</code><a class="headerlink" href="#mtpy.core.mt.MT.rotation_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>rotation angle of Z and Tipper</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mtpy.core.mt.MT.utm_zone">
+<code class="descname">utm_zone</code><a class="headerlink" href="#mtpy.core.mt.MT.utm_zone" title="Permalink to this definition">¶</a></dt>
+<dd><p>UTM zone</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mtpy.core.mt.MT.write_edi_file">
+<code class="descname">write_edi_file</code><span class="sig-paren">(</span><em>new_fn=None</em>, <em>new_Z=None</em>, <em>new_Tipper=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mtpy/core/mt.html#MT.write_edi_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mtpy.core.mt.MT.write_edi_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a new edi file if things have changed.  Note if new_Z or
+new_Tipper are not None, they are not changed in MT object, you
+need to change them manually if you want them to be changed.
+Similarly, the new function name does not change the MT objecte fn
+attribute but does change MT.edi_object.fn attribute.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*new_fn*</strong> (<em>string</em>) &#8211; full path to new file name</li>
+<li><strong>*new_Z*</strong> (<em>mtpy.core.Z object</em>) &#8211; a new impedance tensor object to be written</li>
+<li><strong>*new_Tipper*</strong> (<em>mtpy.core.Z.Tipper object</em>) &#8211; a new Tipper object to be written</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="master_index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Core:</a><ul>
+<li><a class="reference internal" href="#module-mtpy.core.z"><strong>Module z</strong></a><ul>
+<li><a class="reference internal" href="#z-module">z module</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#class-z"><strong>Class Z</strong></a></li>
+<li><a class="reference internal" href="#class-tipper"><strong>Class Tipper</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-edi"><strong>Module edi</strong></a><ul>
+<li><a class="reference internal" href="#module-mtpy.core.edi"><strong>Class Edi</strong></a><ul>
+<li><a class="reference internal" href="#edi-class">EDI Class</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-mt"><strong>Module MT</strong></a><ul>
+<li><a class="reference internal" href="#module-mtpy.core.mt"><strong>Class MT</strong></a><ul>
+<li><a class="reference internal" href="#mt">MT</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="master_index.html"
+                        title="previous chapter">Welcome to MTpy&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="analysis.html"
+                        title="next chapter">Analysis</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/core.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="analysis.html" title="Analysis"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="master_index.html" title="Welcome to MTpy’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="master_index.html">MTpy 0.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, J. Peacock, L. Krieger.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>
