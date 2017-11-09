@@ -9,7 +9,7 @@ Overview
 
 This repository was forked (2016-11-16) from https://github.com/geophysics/mtpy/tree/ak.
 
-Contact Us
+Contacts
 ========
 
 We are planning to merge this repo fork with the geophysics/mtpy beta-branch to establish a new repo.
