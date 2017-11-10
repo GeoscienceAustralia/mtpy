@@ -7,13 +7,10 @@ MTpy: A Python Toolbox for Magnetotelluric (MT) Data Processing, Analysis, Model
 Overview
 ========
 
-This repository was forked (2016-11-16) from https://github.com/geophysics/mtpy/tree/ak.
+This repository has been moved to https://github.com/MTgeophysics/mtpy
 
 Contacts
 ========
-
-We are planning to merge this repo fork with the geophysics/mtpy beta-branch to establish a new repo.
-In the short term, if you want to contribute/collaborate, or have any questions please contact:
 
 | **Fei Zhang**
 | *Lead Developer*
